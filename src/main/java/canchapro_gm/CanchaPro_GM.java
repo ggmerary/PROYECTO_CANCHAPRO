@@ -9,8 +9,12 @@ package canchapro_gm;
  * @author genesis
  */
 public class CanchaPro_GM {
-
+    
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-    }
+        //JFrameLogin formulario=new JFrameLogin();
+        //formulario.setVisible(true);
+        
+        JFrameMenuPrincipal menu=new JFrameMenuPrincipal();
+        menu.setVisible(true);
+}
 }
