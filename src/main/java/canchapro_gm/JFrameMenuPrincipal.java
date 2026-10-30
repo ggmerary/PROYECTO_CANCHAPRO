@@ -41,16 +41,91 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenu4 = new javax.swing.JMenu();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuBar3 = new javax.swing.JMenuBar();
+        jMenu8 = new javax.swing.JMenu();
+        jMenu9 = new javax.swing.JMenu();
+        jMenuBar4 = new javax.swing.JMenuBar();
+        jMenu10 = new javax.swing.JMenu();
+        jMenu11 = new javax.swing.JMenu();
+        jMenuBar5 = new javax.swing.JMenuBar();
+        jMenu14 = new javax.swing.JMenu();
+        jMenu15 = new javax.swing.JMenu();
+        jMenuBar6 = new javax.swing.JMenuBar();
+        jMenu16 = new javax.swing.JMenu();
+        jMenu17 = new javax.swing.JMenu();
+        jMenuBar7 = new javax.swing.JMenuBar();
+        jMenu18 = new javax.swing.JMenu();
+        jMenu19 = new javax.swing.JMenu();
+        jMenu22 = new javax.swing.JMenu();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        jMenu6 = new javax.swing.JMenu();
+        jMenu7 = new javax.swing.JMenu();
+        jMenu12 = new javax.swing.JMenu();
+        jMenu13 = new javax.swing.JMenu();
+        jMenu20 = new javax.swing.JMenu();
+        jMenu21 = new javax.swing.JMenu();
 
         jMenuItem2.setText("jMenuItem2");
+
+        jMenuItem6.setText("jMenuItem6");
+
+        jMenuItem7.setText("jMenuItem7");
+
+        jMenuItem8.setText("jMenuItem8");
+
+        jMenuItem9.setText("jMenuItem9");
+
+        jMenu4.setText("File");
+        jMenuBar2.add(jMenu4);
+
+        jMenu5.setText("Edit");
+        jMenuBar2.add(jMenu5);
+
+        jMenu8.setText("File");
+        jMenuBar3.add(jMenu8);
+
+        jMenu9.setText("Edit");
+        jMenuBar3.add(jMenu9);
+
+        jMenu10.setText("File");
+        jMenuBar4.add(jMenu10);
+
+        jMenu11.setText("Edit");
+        jMenuBar4.add(jMenu11);
+
+        jMenu14.setText("File");
+        jMenuBar5.add(jMenu14);
+
+        jMenu15.setText("Edit");
+        jMenuBar5.add(jMenu15);
+
+        jMenu16.setText("File");
+        jMenuBar6.add(jMenu16);
+
+        jMenu17.setText("Edit");
+        jMenuBar6.add(jMenu17);
+
+        jMenu18.setText("File");
+        jMenuBar7.add(jMenu18);
+
+        jMenu19.setText("Edit");
+        jMenuBar7.add(jMenu19);
+
+        jMenu22.setText("jMenu22");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,6 +143,8 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
+        jMenu3.setText("RESERVAS");
+
         jMenu2.setText("CLIENTE");
         jMenu2.setPreferredSize(new java.awt.Dimension(150, 50));
 
@@ -78,10 +155,29 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jMenuItem3.setText("Busqueda");
         jMenu2.add(jMenuItem3);
 
-        jMenuBar1.add(jMenu2);
+        jMenu3.add(jMenu2);
 
-        jMenu3.setText("RESERVAS");
         jMenuBar1.add(jMenu3);
+
+        jMenu6.setText("Disponibilidad");
+        jMenuBar1.add(jMenu6);
+
+        jMenu7.setText("Clientes");
+        jMenuBar1.add(jMenu7);
+
+        jMenu12.setText("Canchas");
+        jMenuBar1.add(jMenu12);
+
+        jMenu13.setText("Pagos");
+        jMenuBar1.add(jMenu13);
+
+        jMenu20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/reporte1.png"))); // NOI18N
+        jMenu20.setText("REPORTES ");
+        jMenuBar1.add(jMenu20);
+
+        jMenu21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/configuraciones.png"))); // NOI18N
+        jMenu21.setText("CONFIGURACION");
+        jMenuBar1.add(jMenu21);
 
         setJMenuBar(jMenuBar1);
 
@@ -93,7 +189,7 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 650, Short.MAX_VALUE)
+            .addGap(0, 651, Short.MAX_VALUE)
         );
 
         pack();
@@ -134,13 +230,42 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu10;
+    private javax.swing.JMenu jMenu11;
+    private javax.swing.JMenu jMenu12;
+    private javax.swing.JMenu jMenu13;
+    private javax.swing.JMenu jMenu14;
+    private javax.swing.JMenu jMenu15;
+    private javax.swing.JMenu jMenu16;
+    private javax.swing.JMenu jMenu17;
+    private javax.swing.JMenu jMenu18;
+    private javax.swing.JMenu jMenu19;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu20;
+    private javax.swing.JMenu jMenu21;
+    private javax.swing.JMenu jMenu22;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
+    private javax.swing.JMenu jMenu7;
+    private javax.swing.JMenu jMenu8;
+    private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuBar jMenuBar3;
+    private javax.swing.JMenuBar jMenuBar4;
+    private javax.swing.JMenuBar jMenuBar5;
+    private javax.swing.JMenuBar jMenuBar6;
+    private javax.swing.JMenuBar jMenuBar7;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     // End of variables declaration//GEN-END:variables
 }
