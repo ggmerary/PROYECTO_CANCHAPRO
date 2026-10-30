@@ -11,8 +11,8 @@ package canchapro_gm;
 public class CanchaPro_GM {
     
     public static void main(String[] args) {
-        //JFrameLogin formulario=new JFrameLogin();
-        //formulario.setVisible(true);
+        JFrameLogin formulario=new JFrameLogin();
+        formulario.setVisible(true);
         
         JFrameMenuPrincipal menu=new JFrameMenuPrincipal();
         menu.setVisible(true);
