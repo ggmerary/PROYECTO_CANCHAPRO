@@ -6,10 +6,12 @@ package canchapro_gm;
 
 import java.awt.Dimension;
 import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
  
 
 public class JFrameMenuPrincipal extends javax.swing.JFrame {
-    public static JDesktopPane jDesktopPane_menu;
+    private GestorClientes gestorClientes;
+    private JDesktopPane jDesktopPane_menu;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameMenuPrincipal.class.getName());
 
@@ -18,17 +20,18 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
      */
     public JFrameMenuPrincipal() {
         initComponents();
-        this.setSize(new Dimension(1200,700));
-        this.setExtendedState(this.MAXIMIZED_BOTH);
-        this.setLocationRelativeTo(null);
-        this.setTitle("MENU_PRINCIPAL");
-        this.setLayout(null);
-        jDesktopPane_menu=new JDesktopPane();
-        
-        int ancho=java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
-        int alto=java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
-        this.jDesktopPane_menu.setBounds(0,0,ancho,(alto-110));
-        this.add(jDesktopPane_menu);
+     
+    gestorClientes =new GestorClientes(100);
+
+    this.setSize(new Dimension(1200, 700));
+    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    this.setLocationRelativeTo(null);
+    this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
+
+    jDesktopPane_menu = new JDesktopPane();
+
+    jblpaneldecontenido.setLayout(new java.awt.BorderLayout());
+    jblpaneldecontenido.add(jDesktopPane_menu,java.awt.BorderLayout.CENTER);
     }
 
     /**
@@ -64,20 +67,35 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jMenu18 = new javax.swing.JMenu();
         jMenu19 = new javax.swing.JMenu();
         jMenu22 = new javax.swing.JMenu();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuBar8 = new javax.swing.JMenuBar();
+        jMenu24 = new javax.swing.JMenu();
+        jMenu25 = new javax.swing.JMenu();
+        jMenuBar9 = new javax.swing.JMenuBar();
+        jMenu26 = new javax.swing.JMenu();
+        jMenu27 = new javax.swing.JMenu();
+        jMenuBar10 = new javax.swing.JMenuBar();
+        jMenu28 = new javax.swing.JMenu();
+        jMenu29 = new javax.swing.JMenu();
+        jMenuBar11 = new javax.swing.JMenuBar();
+        jMenu30 = new javax.swing.JMenu();
+        jMenu31 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenu6 = new javax.swing.JMenu();
-        jMenu7 = new javax.swing.JMenu();
-        jMenu12 = new javax.swing.JMenu();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jblEncabezado1 = new javax.swing.JLabel();
+        jblEncabezado = new javax.swing.JLabel();
+        jblpaneldecontenido = new javax.swing.JPanel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu3 = new javax.swing.JMenu();
         jMenu13 = new javax.swing.JMenu();
+        jMenu23 = new javax.swing.JMenu();
+        jmenu_Clientes = new javax.swing.JMenu();
+        jItem_gestionClientes = new javax.swing.JMenuItem();
+        jmenu_Pagos = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu12 = new javax.swing.JMenu();
         jMenu20 = new javax.swing.JMenu();
-        jMenu21 = new javax.swing.JMenu();
 
         jMenuItem2.setText("jMenuItem2");
 
@@ -127,57 +145,151 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
 
         jMenu22.setText("jMenu22");
 
+        jMenuItem10.setText("jMenuItem10");
+
+        jMenu24.setText("File");
+        jMenuBar8.add(jMenu24);
+
+        jMenu25.setText("Edit");
+        jMenuBar8.add(jMenu25);
+
+        jMenu26.setText("File");
+        jMenuBar9.add(jMenu26);
+
+        jMenu27.setText("Edit");
+        jMenuBar9.add(jMenu27);
+
+        jMenu28.setText("File");
+        jMenuBar10.add(jMenu28);
+
+        jMenu29.setText("Edit");
+        jMenuBar10.add(jMenu29);
+
+        jMenu30.setText("File");
+        jMenuBar11.add(jMenu30);
+
+        jMenu31.setText("Edit");
+        jMenuBar11.add(jMenu31);
+
+        jMenu2.setText("jMenu2");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/usuario.png"))); // NOI18N
-        jMenu1.setText("USUARIO");
-        jMenu1.setPreferredSize(new java.awt.Dimension(150, 50));
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-cliente.png"))); // NOI18N
-        jMenuItem4.setText("Nuevo Usuario");
-        jMenuItem4.addActionListener(this::jMenuItem4ActionPerformed);
-        jMenu1.add(jMenuItem4);
+        jPanel2.setBackground(new java.awt.Color(129, 199, 132));
 
-        jMenuItem5.setText("GestionarUsuario");
-        jMenu1.add(jMenuItem5);
+        jblEncabezado1.setFont(new java.awt.Font("Segoe UI Semilight", 1, 18)); // NOI18N
+        jblEncabezado1.setText("Complejo Deportivo la 10");
 
-        jMenuBar1.add(jMenu1);
+        jblEncabezado.setFont(new java.awt.Font("Showcard Gothic", 1, 24)); // NOI18N
+        jblEncabezado.setText("CANCHA PRO");
 
-        jMenu3.setText("RESERVAS");
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(478, Short.MAX_VALUE)
+                .addComponent(jblEncabezado1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(539, 539, 539))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(500, 500, 500)
+                .addComponent(jblEncabezado, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jblEncabezado, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jblEncabezado1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51))
+        );
 
-        jMenu2.setText("CLIENTE");
-        jMenu2.setPreferredSize(new java.awt.Dimension(150, 50));
+        javax.swing.GroupLayout jblpaneldecontenidoLayout = new javax.swing.GroupLayout(jblpaneldecontenido);
+        jblpaneldecontenido.setLayout(jblpaneldecontenidoLayout);
+        jblpaneldecontenidoLayout.setHorizontalGroup(
+            jblpaneldecontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jblpaneldecontenidoLayout.setVerticalGroup(
+            jblpaneldecontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 556, Short.MAX_VALUE)
+        );
 
-        jMenuItem1.setText("Registrar Clientes");
-        jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
-        jMenu2.add(jMenuItem1);
+        jMenuBar1.setBackground(new java.awt.Color(46, 125, 50));
 
-        jMenuItem3.setText("Busqueda");
-        jMenu2.add(jMenuItem3);
-
-        jMenu3.add(jMenu2);
-
+        jMenu3.setBackground(new java.awt.Color(255, 0, 204));
+        jMenu3.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu3.setText("INICIO");
+        jMenu3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenu3.setPreferredSize(new java.awt.Dimension(150, 50));
         jMenuBar1.add(jMenu3);
 
-        jMenu6.setText("Disponibilidad");
-        jMenuBar1.add(jMenu6);
-
-        jMenu7.setText("Clientes");
-        jMenuBar1.add(jMenu7);
-
-        jMenu12.setText("Canchas");
-        jMenuBar1.add(jMenu12);
-
-        jMenu13.setText("Pagos");
+        jMenu13.setBackground(new java.awt.Color(204, 102, 0));
+        jMenu13.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu13.setText("RESERVAS");
+        jMenu13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenu13.setPreferredSize(new java.awt.Dimension(150, 50));
         jMenuBar1.add(jMenu13);
 
-        jMenu20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/reporte1.png"))); // NOI18N
-        jMenu20.setText("REPORTES ");
-        jMenuBar1.add(jMenu20);
+        jMenu23.setBackground(new java.awt.Color(129, 199, 132));
+        jMenu23.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu23.setText("DISPONIBILIDAD");
+        jMenu23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenu23.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jMenu23);
 
-        jMenu21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/configuraciones.png"))); // NOI18N
-        jMenu21.setText("CONFIGURACION");
-        jMenuBar1.add(jMenu21);
+        jmenu_Clientes.setBackground(new java.awt.Color(129, 199, 132));
+        jmenu_Clientes.setForeground(new java.awt.Color(255, 255, 255));
+        jmenu_Clientes.setText("CLIENTES");
+        jmenu_Clientes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jmenu_Clientes.setPreferredSize(new java.awt.Dimension(150, 50));
+
+        jItem_gestionClientes.setText("Gestion de Clientes");
+        jItem_gestionClientes.addActionListener(this::jItem_gestionClientesActionPerformed);
+        jmenu_Clientes.add(jItem_gestionClientes);
+
+        jMenuBar1.add(jmenu_Clientes);
+
+        jmenu_Pagos.setBackground(new java.awt.Color(129, 199, 132));
+        jmenu_Pagos.setForeground(new java.awt.Color(255, 255, 255));
+        jmenu_Pagos.setText("PAGOS");
+        jmenu_Pagos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jmenu_Pagos.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jmenu_Pagos);
+
+        jMenu1.setBackground(new java.awt.Color(129, 199, 132));
+        jMenu1.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu1.setText("REPORTES");
+        jMenu1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenu1.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jMenu1);
+
+        jMenu12.setBackground(new java.awt.Color(129, 199, 132));
+        jMenu12.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu12.setText("CONFIGURACION");
+        jMenu12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenu12.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jMenu12);
+
+        jMenu20.setBackground(new java.awt.Color(129, 199, 132));
+        jMenu20.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu20.setText("CANCHAS");
+        jMenu20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenu20.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jMenu20);
 
         setJMenuBar(jMenuBar1);
 
@@ -185,23 +297,30 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jblpaneldecontenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 651, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jblpaneldecontenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    private void jItem_gestionClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jItem_gestionClientesActionPerformed
+// TODO add your handling code here:
+        JInternalFrm_Cliente ventana= new JInternalFrm_Cliente(gestorClientes);
+        jDesktopPane_menu.add(ventana);
+        ventana.setVisible(true);
+        
+    }//GEN-LAST:event_jItem_gestionClientesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -229,6 +348,7 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem jItem_gestionClientes;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu11;
@@ -242,30 +362,44 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu19;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu20;
-    private javax.swing.JMenu jMenu21;
     private javax.swing.JMenu jMenu22;
+    private javax.swing.JMenu jMenu23;
+    private javax.swing.JMenu jMenu24;
+    private javax.swing.JMenu jMenu25;
+    private javax.swing.JMenu jMenu26;
+    private javax.swing.JMenu jMenu27;
+    private javax.swing.JMenu jMenu28;
+    private javax.swing.JMenu jMenu29;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu30;
+    private javax.swing.JMenu jMenu31;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMenuBar10;
+    private javax.swing.JMenuBar jMenuBar11;
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuBar jMenuBar3;
     private javax.swing.JMenuBar jMenuBar4;
     private javax.swing.JMenuBar jMenuBar5;
     private javax.swing.JMenuBar jMenuBar6;
     private javax.swing.JMenuBar jMenuBar7;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuBar jMenuBar8;
+    private javax.swing.JMenuBar jMenuBar9;
+    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel jblEncabezado;
+    private javax.swing.JLabel jblEncabezado1;
+    private javax.swing.JPanel jblpaneldecontenido;
+    private javax.swing.JMenu jmenu_Clientes;
+    private javax.swing.JMenu jmenu_Pagos;
     // End of variables declaration//GEN-END:variables
 }
