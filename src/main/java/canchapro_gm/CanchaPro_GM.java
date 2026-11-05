@@ -122,11 +122,27 @@ for (int i = 0; i < registrados.length; i++) {
 }
 
 // GUARDAR CLIENTES EN CSV
-ArchivoCliente archClientes = new ArchivoCliente();
+//ArchivoCliente archClientes = new ArchivoCliente();
 
-registrados = gestor.obtenerClientes();
+//registrados = gestor.obtenerClientes();
 
-archClientes.guardarClientes(registrados);
+//archClientes.guardarClientes(registrados);
+ArchivoCliente archivo = new ArchivoCliente();
+
+Cliente[] clientesCargados = archivo.cargarClientes(100);
+
+for (int i = 0; i < clientesCargados.length; i++) {
+
+    Cliente cliente = clientesCargados[i];
+
+    System.out.println("Código: " + cliente.getCodigo());
+    System.out.println("Nombre: " + cliente.getNombre());
+    System.out.println("Teléfono: " + cliente.getTelefono());
+    System.out.println("Correo: " + cliente.getCorreo());
+    System.out.println("Fecha: " + cliente.getFechaRegistro());
+
+    System.out.println("----------------------");    
+}
     
 }
 }

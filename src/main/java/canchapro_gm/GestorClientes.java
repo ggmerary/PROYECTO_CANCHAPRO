@@ -30,19 +30,22 @@ public class GestorClientes {
        Cliente[]encontrados=new Cliente[cantidadClientes];
        int cantidadEncontrados=0;
        
-       for(int i=0; i<cantidadClientes; i++){
-           
-       Cliente clienteActual=listaClientes[i];
-       String nombreActual=clienteActual.getNombre();
-       
-       if(nombreActual.equalsIgnoreCase(nombre)){
-           encontrados[cantidadEncontrados]=listaClientes[i];
-           cantidadEncontrados ++;
-       }
-           
-       }
-      return encontrados;
-       
+      String nombreBuscado=nombre.trim().toLowerCase();
+      for(int i=0; i<cantidadClientes; i++){
+          Cliente clienteActual=listaClientes[i];
+          String nombreActual=clienteActual.getNombre();
+          String nombreCliente=nombreActual.toLowerCase();
+          if(nombreCliente.contains(nombreBuscado)){
+              encontrados[cantidadEncontrados]=clienteActual;
+              cantidadEncontrados++;
+          }
+          
+      }
+      Cliente[]resultados= new Cliente[cantidadEncontrados];
+      for(int i=0;i<cantidadEncontrados; i++){
+          resultados[i]=encontrados[i];
+      }
+       return resultados;
    }
     public Cliente agregarCliente(String nombre, String telefono, String correo ){
         if (nombre == null || nombre.trim().isEmpty()
@@ -106,6 +109,38 @@ public class GestorClientes {
         }
         return registrados;
         
+    }
+    public void establecerClientes(Cliente[]clientesCargados){
+        cantidadClientes=0;
+        correlativoCodigo=1;
+        if(clientesCargados==null){
+            return;
+        }
+        
+        for(int i=0;i<listaClientes.length;i++){
+            listaClientes[i]=null;
+        }
+        for(int i=0;i<clientesCargados.length;i++){
+            Cliente cliente=clientesCargados[i];
+            if(cliente!=null&&cantidadClientes<listaClientes.length){
+            listaClientes[cantidadClientes]=cliente;
+            cantidadClientes++;
+            String codigo=cliente.getCodigo();
+            if(codigo !=null &&codigo.matches("C[0-9]+")){
+                String numeroTexto=codigo.substring(1);
+                int numero=Integer.parseInt(numeroTexto);
+                if(numero>=correlativoCodigo){
+                    correlativoCodigo=numero+1;
+                }
+            }
+            
+        }
+        }
+    }
+    public boolean guardarClientes(){
+        ArchivoCliente archivo=new ArchivoCliente();
+        Cliente[]clientes=obtenerClientes();
+        return archivo.guardarClientes(clientes);
     }
     public String generarCodigoCliente(){
         String codigo;

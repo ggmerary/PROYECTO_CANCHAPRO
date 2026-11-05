@@ -15,7 +15,7 @@ public class Cliente extends Persona {
      super(codigo, nombre, telefono, correo);
      this.fechaRegistro=fechaRegistro;
     }
-    public LocalDate getfechaRegistro(){
+    public LocalDate getFechaRegistro(){
         return fechaRegistro;
     }
 }

@@ -22,6 +22,9 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         initComponents();
      
     gestorClientes =new GestorClientes(100);
+    ArchivoCliente archivo=new ArchivoCliente();
+    Cliente[]clientesCargados=archivo.cargarClientes(100);
+    gestorClientes.establecerClientes(clientesCargados);
 
     this.setSize(new Dimension(1200, 700));
     this.setExtendedState(JFrame.MAXIMIZED_BOTH);
