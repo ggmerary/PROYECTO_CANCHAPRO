@@ -69,7 +69,7 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         txtBuscar = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cmbTipodeBusqueda = new javax.swing.JComboBox<>();
 
         setClosable(true);
         setIconifiable(true);
@@ -78,9 +78,12 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
 
         jPanel1.setBackground(new java.awt.Color(241, 248, 233));
 
+        txtCodigo.setEditable(false);
         txtCodigo.addActionListener(this::txtCodigoActionPerformed);
 
         txtTelefono.addActionListener(this::txtTelefonoActionPerformed);
+
+        txtFechaRegistro.setEditable(false);
 
         btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(this::btnBuscarActionPerformed);
@@ -101,11 +104,17 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
                 "Código", "Nombre", "Teléfono", "Correo", "Fecha de Registro"
             }
         ));
+        tbClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbClientesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbClientes);
 
         jPanel2.setBackground(new java.awt.Color(129, 199, 132));
 
         btnModicar.setText("Modificar");
+        btnModicar.addActionListener(this::btnModicarActionPerformed);
 
         btnEliminar.setText("Eliminar");
 
@@ -169,7 +178,8 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
         jButton1.setText("ACTUALIZAR TABLA");
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Buscar Por Codigo", "Buscar por CVombre" }));
+        cmbTipodeBusqueda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Buscar por Código", "Buscar por Nombre" }));
+        cmbTipodeBusqueda.addActionListener(this::cmbTipodeBusquedaActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -197,7 +207,7 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
                                         .addGap(393, 393, 393)
                                         .addComponent(btnBuscar)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(cmbTipodeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(txtFechaRegistro, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtCorreo)
                                     .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,7 +235,7 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
                         .addGap(39, 39, 39)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cmbTipodeBusqueda, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(btnBuscar))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -272,7 +282,10 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(34, 34, 34))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -328,21 +341,66 @@ if(guardado){
     }//GEN-LAST:event_btnGuarddarCambiosActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-      String nombre=txtBuscar.getText();
-      if(nombre.isEmpty()){
-          JOptionPane.showMessageDialog(this, "ingrese el nombre del cliente");
-          return;
-      }
-      Cliente[]encontrados=gestorClientes.buscarClientesPorNombre(nombre);
-      DefaultTableModel modelo=(DefaultTableModel)tbClientes.getModel();
-      modelo.setRowCount(0);
-      for(int i=0; i<encontrados.length; i++){
-          Cliente clienteActual=encontrados[i];
-          Object[]fila={clienteActual.getCodigo(),clienteActual.getNombre(),clienteActual.getTelefono(), clienteActual.getCorreo(),clienteActual.getFechaRegistro()};
-          modelo.addRow(fila);
-      }
-    if(encontrados.length==0){
-    JOptionPane.showMessageDialog(this, "No se encontraron clientes con ese nombre");
+    String busqueda = txtBuscar.getText().trim();
+    String tipo = cmbTipodeBusqueda.getSelectedItem().toString();
+
+    if (busqueda.isEmpty()) {
+        JOptionPane.showMessageDialog(this,
+                "Ingrese un dato para buscar");
+        return;
+    }
+
+    DefaultTableModel modelo =
+            (DefaultTableModel) tbClientes.getModel();
+
+    modelo.setRowCount(0);
+
+    if (tipo.equalsIgnoreCase("Buscar por Código")) {
+
+        Cliente cliente =
+                gestorClientes.buscarClientePorCodigo(busqueda);
+
+        if (cliente != null) {
+
+            Object[] fila = { 
+                cliente.getCodigo(),
+                cliente.getNombre(),
+                cliente.getTelefono(),
+                cliente.getCorreo(),
+                cliente.getFechaRegistro()
+            };
+
+            modelo.addRow(fila);
+
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "No se encontró el cliente");
+        }
+
+    } else if (tipo.equalsIgnoreCase("Buscar por Nombre")) {
+
+        Cliente[] encontrados =
+                gestorClientes.buscarClientesPorNombre(busqueda);
+
+        for (int i = 0; i < encontrados.length; i++) {
+
+            Cliente clienteActual = encontrados[i];
+
+            Object[] fila = {
+                clienteActual.getCodigo(),
+                clienteActual.getNombre(),
+                clienteActual.getTelefono(),
+                clienteActual.getCorreo(),
+                clienteActual.getFechaRegistro()
+            };
+
+            modelo.addRow(fila);
+        }
+
+        if (encontrados.length == 0) {
+            JOptionPane.showMessageDialog(this,
+                    "No se encontraron clientes");
+        }
     }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
@@ -353,7 +411,63 @@ if(guardado){
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         mostrarClientes();
+         txtBuscar.setText("");
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cmbTipodeBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTipodeBusquedaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbTipodeBusquedaActionPerformed
+
+    private void btnModicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModicarActionPerformed
+        // TODO add your handling code here:
+    String codigo = txtCodigo.getText().trim();
+    String nombre = txtNombre.getText().trim();
+    String telefono = txtTelefono.getText().trim();
+    String correo = txtCorreo.getText().trim();
+
+    if (codigo.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Seleccione un cliente de la tabla");
+        return;
+    }
+
+    boolean modificado = gestorClientes.modificarCliente(
+            codigo, nombre, telefono, correo);
+
+    if (modificado) {
+
+        mostrarClientes();
+
+        JOptionPane.showMessageDialog(this, "Se ha modificado los datos del cliente correctamente");
+
+    } else {
+
+        JOptionPane.showMessageDialog(this,
+                "No se pudo modificar los datos del cliente");
+    }
+    }//GEN-LAST:event_btnModicarActionPerformed
+
+    private void tbClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbClientesMouseClicked
+      int fila = tbClientes.getSelectedRow();
+
+    if (fila >= 0) {
+
+        txtCodigo.setText(
+                tbClientes.getValueAt(fila, 0).toString());
+
+        txtNombre.setText(
+                tbClientes.getValueAt(fila, 1).toString());
+
+        txtTelefono.setText(
+                tbClientes.getValueAt(fila, 2).toString());
+
+        txtCorreo.setText(
+                tbClientes.getValueAt(fila, 3).toString());
+
+        txtFechaRegistro.setText(
+                tbClientes.getValueAt(fila, 4).toString());
+         btnRegistrar.setEnabled(false);
+    }  // TODO add your handling code here:
+    }//GEN-LAST:event_tbClientesMouseClicked
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -362,8 +476,8 @@ if(guardado){
     private javax.swing.JButton btnGuarddarCambios;
     private javax.swing.JButton btnModicar;
     private javax.swing.JButton btnRegistrar;
+    private javax.swing.JComboBox<String> cmbTipodeBusqueda;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
