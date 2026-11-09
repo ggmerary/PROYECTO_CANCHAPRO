@@ -18,7 +18,7 @@ System.out.println("Fecha actual de Java: " + LocalDate.now());
 // Crear gestor con capacidad para 5 clientes
 GestorClientes gestor = new GestorClientes(5);
 
-// REGISTRAR CLIENTES
+
 Cliente cliente1 = gestor.agregarCliente(
         "Carlos Perez",
         "45671234",

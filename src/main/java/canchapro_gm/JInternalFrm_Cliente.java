@@ -16,6 +16,10 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
         initComponents();
  
         this.gestorClientes=gestorClientes;
+        btnRegistrar.setEnabled(true);
+        btnModificar.setEnabled(false);
+        btnReactivar.setEnabled(false);
+        btnDesactivar.setEnabled(false);
         mostrarClientes();
     }
     private void mostrarClientes(){
@@ -26,12 +30,20 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
         for(int i=0; i<registrados.length;i++){
             Cliente clienteActual=registrados[i];
             if(clienteActual!=null){
+                String estado;
+                    if(clienteActual.estaActivo()){
+                        estado="Activo";
+                    }else{
+                        estado="Inactivo";
+                    }
                 Object[] fila={
+                    
                     clienteActual.getCodigo(),
                     clienteActual.getNombre(),
                     clienteActual.getTelefono(),
                     clienteActual.getCorreo(),
-                    clienteActual.getFechaRegistro()
+                    clienteActual.getFechaRegistro(),
+                    estado
                 };
                 modelo.addRow(fila);
             }
@@ -61,9 +73,11 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbClientes = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        btnModicar = new javax.swing.JButton();
-        btnEliminar = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
+        btnDesactivar = new javax.swing.JButton();
         btnRegistrar = new javax.swing.JButton();
+        btnLimpiar = new javax.swing.JButton();
+        btnReactivar = new javax.swing.JButton();
         jblCorreo = new javax.swing.JLabel();
         btnGuarddarCambios = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -101,7 +115,7 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Código", "Nombre", "Teléfono", "Correo", "Fecha de Registro"
+                "Código", "Nombre", "Teléfono", "Correo", "Fecha de Registro", "Estado"
             }
         ));
         tbClientes.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -113,13 +127,20 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
 
         jPanel2.setBackground(new java.awt.Color(129, 199, 132));
 
-        btnModicar.setText("Modificar");
-        btnModicar.addActionListener(this::btnModicarActionPerformed);
+        btnModificar.setText("Modificar");
+        btnModificar.addActionListener(this::btnModificarActionPerformed);
 
-        btnEliminar.setText("Eliminar");
+        btnDesactivar.setText("Desactivar");
+        btnDesactivar.addActionListener(this::btnDesactivarActionPerformed);
 
         btnRegistrar.setText("Registrar");
         btnRegistrar.addActionListener(this::btnRegistrarActionPerformed);
+
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
+
+        btnReactivar.setText("Reactivar");
+        btnReactivar.addActionListener(this::btnReactivarActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -128,10 +149,17 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnRegistrar)
-                    .addComponent(btnModicar)
-                    .addComponent(btnEliminar))
-                .addContainerGap(124, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnLimpiar)
+                            .addComponent(btnRegistrar)
+                            .addComponent(btnModificar))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnDesactivar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addComponent(btnReactivar)
+                        .addGap(20, 20, 20))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,10 +167,13 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
                 .addGap(66, 66, 66)
                 .addComponent(btnRegistrar)
                 .addGap(28, 28, 28)
-                .addComponent(btnModicar)
+                .addComponent(btnModificar)
                 .addGap(18, 18, 18)
-                .addComponent(btnEliminar)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDesactivar)
+                    .addComponent(btnReactivar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(btnLimpiar))
         );
 
         jblCorreo.setText("Correo");
@@ -206,7 +237,7 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(393, 393, 393)
                                         .addComponent(btnBuscar)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                                         .addComponent(cmbTipodeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(txtFechaRegistro, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtCorreo)
@@ -271,7 +302,7 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(47, Short.MAX_VALUE))
+                        .addContainerGap(26, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnGuarddarCambios)
@@ -282,14 +313,14 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(34, 34, 34))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(15, 15, 15))
         );
 
         pack();
@@ -357,24 +388,31 @@ if(guardado){
 
     if (tipo.equalsIgnoreCase("Buscar por Código")) {
 
-        Cliente cliente =
-                gestorClientes.buscarClientePorCodigo(busqueda);
+        Cliente cliente=gestorClientes.buscarClientePorCodigo(busqueda);
 
         if (cliente != null) {
+            String estado;
+
+            if (cliente.estaActivo()) {
+                estado = "Activo";
+            } else {
+                estado = "Inactivo";
+            }
 
             Object[] fila = { 
                 cliente.getCodigo(),
                 cliente.getNombre(),
                 cliente.getTelefono(),
                 cliente.getCorreo(),
-                cliente.getFechaRegistro()
+                cliente.getFechaRegistro(),
+                estado
             };
 
             modelo.addRow(fila);
 
         } else {
             JOptionPane.showMessageDialog(this,
-                    "No se encontró el cliente");
+                    "No se encontró el cliente cpn el codigo");
         }
 
     } else if (tipo.equalsIgnoreCase("Buscar por Nombre")) {
@@ -399,9 +437,15 @@ if(guardado){
 
         if (encontrados.length == 0) {
             JOptionPane.showMessageDialog(this,
-                    "No se encontraron clientes");
+                    "No se encontraron cliente con el nombre ingresado");
         }
     }
+    tbClientes.clearSelection();;
+     btnModificar.setEnabled(false);
+    btnDesactivar.setEnabled(false);
+    btnReactivar.setEnabled(false);
+    btnRegistrar.setEnabled(true);
+    
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
@@ -418,7 +462,7 @@ if(guardado){
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbTipodeBusquedaActionPerformed
 
-    private void btnModicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModicarActionPerformed
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         // TODO add your handling code here:
     String codigo = txtCodigo.getText().trim();
     String nombre = txtNombre.getText().trim();
@@ -444,7 +488,7 @@ if(guardado){
         JOptionPane.showMessageDialog(this,
                 "No se pudo modificar los datos del cliente");
     }
-    }//GEN-LAST:event_btnModicarActionPerformed
+    }//GEN-LAST:event_btnModificarActionPerformed
 
     private void tbClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbClientesMouseClicked
       int fila = tbClientes.getSelectedRow();
@@ -465,16 +509,149 @@ if(guardado){
 
         txtFechaRegistro.setText(
                 tbClientes.getValueAt(fila, 4).toString());
+         
          btnRegistrar.setEnabled(false);
+         btnModificar.setEnabled(true);
+                 String codigo = txtCodigo.getText();
+
+        Cliente cliente = gestorClientes.buscarClientePorCodigo(codigo);
+
+        if (cliente != null) {
+
+            if (cliente.estaActivo()) {
+
+                btnDesactivar.setEnabled(true);
+                btnReactivar.setEnabled(false);
+
+            } else {
+
+                btnDesactivar.setEnabled(false);
+                btnReactivar.setEnabled(true);
+            }
+        }
     }  // TODO add your handling code here:
     }//GEN-LAST:event_tbClientesMouseClicked
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        // TODO add your handling code here:
+        txtCodigo.setText("");
+    txtNombre.setText("");
+    txtTelefono.setText("");
+    txtCorreo.setText("");
+    txtFechaRegistro.setText("");
+
+    tbClientes.clearSelection();
+
+    btnRegistrar.setEnabled(true);
+    btnModificar.setEnabled(false);
+    btnDesactivar.setEnabled(false);
+    btnReactivar.setEnabled(false);
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnDesactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDesactivarActionPerformed
+       int fila = tbClientes.getSelectedRow();
+
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione un cliente de la tabla");
+        return;
+    }
+
+    String codigo = tbClientes.getValueAt(fila, 0).toString();
+
+    int respuesta = JOptionPane.showConfirmDialog(
+            this,
+            "¿Desea desactivar al cliente " + codigo + "?",
+            "Confirmar desactivación",
+            JOptionPane.YES_NO_OPTION
+    );
+
+    if (respuesta == JOptionPane.YES_OPTION) {
+
+        boolean desactivado =
+                gestorClientes.desactivarCliente(codigo);
+
+        if (desactivado) {
+
+            mostrarClientes();
+
+            txtCodigo.setText("");
+            txtNombre.setText("");
+            txtTelefono.setText("");
+            txtCorreo.setText("");
+            txtFechaRegistro.setText("");
+
+            tbClientes.clearSelection();
+
+            btnRegistrar.setEnabled(true);
+            btnModificar.setEnabled(false);
+
+            JOptionPane.showMessageDialog(this,
+                    "Cliente desactivado correctamente");
+
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "El cliente ya está inactivo o no existe");
+        }
+    }  // TODO add your handling code here:
+    }//GEN-LAST:event_btnDesactivarActionPerformed
+
+    private void btnReactivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReactivarActionPerformed
+         int fila = tbClientes.getSelectedRow();
+
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione un cliente de la tabla");
+        return;
+    }
+
+    String codigo = tbClientes.getValueAt(fila, 0).toString();
+
+    int respuesta = JOptionPane.showConfirmDialog(
+            this,
+            "¿Desea reactivar al cliente " + codigo + "?",
+            "Confirmar reactivación",
+            JOptionPane.YES_NO_OPTION
+    );
+
+    if (respuesta == JOptionPane.YES_OPTION) {
+
+        boolean reactivado =
+                gestorClientes.reactivarCliente(codigo);
+
+        if (reactivado) {
+
+            mostrarClientes();
+
+            txtCodigo.setText("");
+            txtNombre.setText("");
+            txtTelefono.setText("");
+            txtCorreo.setText("");
+            txtFechaRegistro.setText("");
+
+            tbClientes.clearSelection();
+
+            btnRegistrar.setEnabled(true);
+            btnModificar.setEnabled(false);
+
+            JOptionPane.showMessageDialog(this,
+                    "Cliente reactivado correctamente");
+
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "El cliente ya está activo o no existe");
+        }
+    }        
+    }//GEN-LAST:event_btnReactivarActionPerformed
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnDesactivar;
     private javax.swing.JButton btnGuarddarCambios;
-    private javax.swing.JButton btnModicar;
+    private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnReactivar;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JComboBox<String> cmbTipodeBusqueda;
     private javax.swing.JButton jButton1;

@@ -10,13 +10,21 @@ import java.time.LocalDate;
 public class Cliente extends Persona {
     
  private LocalDate fechaRegistro;
+ private boolean activo;
     public Cliente(String codigo ,String nombre, String telefono, String correo, LocalDate fechaRegistro){
         
      super(codigo, nombre, telefono, correo);
      this.fechaRegistro=fechaRegistro;
+     this.activo=true;
     }
     public LocalDate getFechaRegistro(){
         return fechaRegistro;
+    }
+    public boolean estaActivo(){
+    return activo;
+}
+    public void setActivo(boolean activo){
+        this.activo=activo;
     }
 }
     

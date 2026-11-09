@@ -101,6 +101,30 @@ public class GestorClientes {
         }
         return false;
     }
+    public boolean desactivarCliente(String codigo){
+        Cliente cliente=buscarClientePorCodigo(codigo);
+        if(cliente!=null){
+            if(cliente.estaActivo()){
+                cliente.setActivo(false);
+                return true;
+            }
+        }
+            return false;
+    }
+    public boolean reactivarCliente(String codigo) {
+
+    Cliente cliente = buscarClientePorCodigo(codigo);
+
+    if (cliente != null) {
+
+        if (!cliente.estaActivo()) {
+            cliente.setActivo(true);
+            return true;
+        }
+    }
+
+    return false;
+}
     
     public Cliente[]obtenerClientes(){
         Cliente[]registrados=new Cliente[cantidadClientes];
@@ -154,4 +178,6 @@ public class GestorClientes {
   
         return codigo;
     }
+    
 }
+
