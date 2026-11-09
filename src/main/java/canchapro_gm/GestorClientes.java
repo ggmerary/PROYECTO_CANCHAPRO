@@ -166,6 +166,15 @@ public class GestorClientes {
         Cliente[]clientes=obtenerClientes();
         return archivo.guardarClientes(clientes);
     }
+    public void descartarCambios() {
+
+    ArchivoCliente archivo = new ArchivoCliente();
+
+    Cliente[] clientesGuardados = archivo.cargarClientes(
+            listaClientes.length);
+
+    establecerClientes(clientesGuardados);
+}
     public String generarCodigoCliente(){
         String codigo;
         if(correlativoCodigo<10){

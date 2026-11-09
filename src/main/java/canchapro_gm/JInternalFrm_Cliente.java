@@ -12,6 +12,7 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
     
 
     private GestorClientes gestorClientes;
+    private boolean cambiosPendientes = false;
     public JInternalFrm_Cliente(GestorClientes gestorClientes) {
         initComponents();
  
@@ -86,9 +87,27 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
         cmbTipodeBusqueda = new javax.swing.JComboBox<>();
 
         setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setIconifiable(true);
         setMaximizable(true);
         setTitle("REGISTRAR CLIENTE");
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(241, 248, 233));
 
@@ -343,6 +362,7 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
       Cliente nuevoCliente=gestorClientes.agregarCliente(nombre, telefono, correo);
       
       if(nuevoCliente!=null){
+          cambiosPendientes = true;
           txtCodigo.setText(nuevoCliente.getCodigo());
           txtFechaRegistro.setText(nuevoCliente.getFechaRegistro().toString());
           
@@ -363,6 +383,7 @@ public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
     private void btnGuarddarCambiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuarddarCambiosActionPerformed
 boolean guardado=gestorClientes.guardarClientes();
 if(guardado){
+    cambiosPendientes=false;
     JOptionPane.showMessageDialog(this, "clientes guardados correctamente");
     
 }else{
@@ -412,24 +433,30 @@ if(guardado){
 
         } else {
             JOptionPane.showMessageDialog(this,
-                    "No se encontró el cliente cpn el codigo");
+                    "No se encontró el cliente con el codigo");
         }
 
     } else if (tipo.equalsIgnoreCase("Buscar por Nombre")) {
 
-        Cliente[] encontrados =
-                gestorClientes.buscarClientesPorNombre(busqueda);
+        Cliente[] encontrados =gestorClientes.buscarClientesPorNombre(busqueda);
 
         for (int i = 0; i < encontrados.length; i++) {
 
             Cliente clienteActual = encontrados[i];
+            String estado;
+             if (clienteActual.estaActivo()) {
+            estado = "Activo";
+        } else {
+            estado = "Inactivo";
+        }
 
             Object[] fila = {
                 clienteActual.getCodigo(),
                 clienteActual.getNombre(),
                 clienteActual.getTelefono(),
                 clienteActual.getCorreo(),
-                clienteActual.getFechaRegistro()
+                clienteActual.getFechaRegistro(), 
+                estado
             };
 
             modelo.addRow(fila);
@@ -478,6 +505,7 @@ if(guardado){
             codigo, nombre, telefono, correo);
 
     if (modificado) {
+        cambiosPendientes = true;
 
         mostrarClientes();
 
@@ -572,6 +600,7 @@ if(guardado){
                 gestorClientes.desactivarCliente(codigo);
 
         if (desactivado) {
+            cambiosPendientes = true;
 
             mostrarClientes();
 
@@ -620,7 +649,7 @@ if(guardado){
                 gestorClientes.reactivarCliente(codigo);
 
         if (reactivado) {
-
+            cambiosPendientes = true;
             mostrarClientes();
 
             txtCodigo.setText("");
@@ -643,6 +672,50 @@ if(guardado){
         }
     }        
     }//GEN-LAST:event_btnReactivarActionPerformed
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+      if (cambiosPendientes == false) {
+        dispose();
+        return;
+    }
+
+    Object[] opciones = {
+        "Guardar",
+        "No guardar",
+        "Cancelar"
+    };
+
+    int respuesta = JOptionPane.showOptionDialog( this, "Tiene cambios sin guardar. ¿Desea guardarlos?","Confirmar cierre",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            opciones,
+            opciones[0]
+    );
+
+    if (respuesta == 0) {
+
+        boolean guardado = gestorClientes.guardarClientes();
+
+        if (guardado) {
+            cambiosPendientes = false;
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudieron guardar los cambios");
+        }
+
+    } else if (respuesta == 1) {
+
+      gestorClientes.descartarCambios();
+
+      cambiosPendientes = false;
+
+    dispose();
+    }
+
+ 
+  // TODO add your handling code here:
+    }//GEN-LAST:event_formInternalFrameClosing
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
