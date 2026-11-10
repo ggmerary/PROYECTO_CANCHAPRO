@@ -10,9 +10,10 @@ import javax.swing.table.DefaultTableModel;
 
 public class JInternalFrm_Cliente extends javax.swing.JInternalFrame {
     
-
     private GestorClientes gestorClientes;
     private boolean cambiosPendientes = false;
+    
+    
     public JInternalFrm_Cliente(GestorClientes gestorClientes) {
         initComponents();
  

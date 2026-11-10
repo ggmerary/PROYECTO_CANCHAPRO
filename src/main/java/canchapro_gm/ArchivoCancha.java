@@ -66,7 +66,7 @@ public class ArchivoCancha {
                 LocalTime horaApertura=LocalTime.parse(datos[6].trim());
                 LocalTime horaCierre=LocalTime.parse(datos[7].trim());
                 if(nombre.isEmpty()||tipo.isEmpty()
-                        ||capacidad<=0||precioBase<=0
+                        ||capacidad<=0||precioBase<0
                         ||!horaCierre.isAfter(horaApertura)){
                     return null;
                 }

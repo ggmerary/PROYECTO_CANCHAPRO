@@ -4,16 +4,17 @@
  */
 package canchapro_gm;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
  
 
 public class JFrameMenuPrincipal extends javax.swing.JFrame {
     private GestorClientes gestorClientes;
     private GestorCanchas gestorCanchas;
-    private JDesktopPane jDesktopPane_menu;
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameMenuPrincipal.class.getName());
 
     /**
@@ -21,21 +22,35 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
      */
     public JFrameMenuPrincipal() {
         initComponents();
+        getContentPane().removeAll();
+
+getContentPane().setLayout(new BorderLayout());
+
+getContentPane().add(
+        jpanleEncabezado, BorderLayout.NORTH);
+
+getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
+        
      
     gestorClientes =new GestorClientes(100);
     ArchivoCliente archivo=new ArchivoCliente();
     Cliente[]clientesCargados=archivo.cargarClientes(100);
     gestorClientes.establecerClientes(clientesCargados);
+    
+    gestorCanchas = new GestorCanchas();
 
+     if (!gestorCanchas.cargarDatos()) {
+
+    JOptionPane.showMessageDialog(this,
+            "No se pudieron cargar las canchas.");
+    }
+   
     this.setSize(new Dimension(1200, 700));
     this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     this.setLocationRelativeTo(null);
     this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
 
-    jDesktopPane_menu = new JDesktopPane();
-
-    jblpaneldecontenido.setLayout(new java.awt.BorderLayout());
-    jblpaneldecontenido.add(jDesktopPane_menu,java.awt.BorderLayout.CENTER);
+   
     }
 
     /**
@@ -47,150 +62,25 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
-        jMenuBar2 = new javax.swing.JMenuBar();
-        jMenu4 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
-        jMenuBar3 = new javax.swing.JMenuBar();
-        jMenu8 = new javax.swing.JMenu();
-        jMenu9 = new javax.swing.JMenu();
-        jMenuBar4 = new javax.swing.JMenuBar();
-        jMenu10 = new javax.swing.JMenu();
-        jMenu11 = new javax.swing.JMenu();
-        jMenuBar5 = new javax.swing.JMenuBar();
-        jMenu14 = new javax.swing.JMenu();
-        jMenu15 = new javax.swing.JMenu();
-        jMenuBar6 = new javax.swing.JMenuBar();
-        jMenu16 = new javax.swing.JMenu();
-        jMenu17 = new javax.swing.JMenu();
-        jMenuBar7 = new javax.swing.JMenuBar();
-        jMenu18 = new javax.swing.JMenu();
-        jMenu19 = new javax.swing.JMenu();
-        jMenu22 = new javax.swing.JMenu();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jMenuBar8 = new javax.swing.JMenuBar();
-        jMenu24 = new javax.swing.JMenu();
-        jMenu25 = new javax.swing.JMenu();
-        jMenuBar9 = new javax.swing.JMenuBar();
-        jMenu26 = new javax.swing.JMenu();
-        jMenu27 = new javax.swing.JMenu();
-        jMenuBar10 = new javax.swing.JMenuBar();
-        jMenu28 = new javax.swing.JMenu();
-        jMenu29 = new javax.swing.JMenu();
-        jMenuBar11 = new javax.swing.JMenuBar();
-        jMenu30 = new javax.swing.JMenu();
-        jMenu31 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        jpanleEncabezado = new javax.swing.JPanel();
         jblEncabezado1 = new javax.swing.JLabel();
         jblEncabezado = new javax.swing.JLabel();
-        jblpaneldecontenido = new javax.swing.JPanel();
+        jDesktopPane_menu = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenu13 = new javax.swing.JMenu();
         jMenu23 = new javax.swing.JMenu();
         jmenu_Clientes = new javax.swing.JMenu();
-        jItem_gestionClientes = new javax.swing.JMenuItem();
+        jItemGestionClientes = new javax.swing.JMenuItem();
         jmenu_Pagos = new javax.swing.JMenu();
+        jMenuCanchas = new javax.swing.JMenu();
+        jItemGestionCanchas = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenu12 = new javax.swing.JMenu();
-        jMenu20 = new javax.swing.JMenu();
-
-        jMenuItem2.setText("jMenuItem2");
-
-        jMenuItem6.setText("jMenuItem6");
-
-        jMenuItem7.setText("jMenuItem7");
-
-        jMenuItem8.setText("jMenuItem8");
-
-        jMenuItem9.setText("jMenuItem9");
-
-        jMenu4.setText("File");
-        jMenuBar2.add(jMenu4);
-
-        jMenu5.setText("Edit");
-        jMenuBar2.add(jMenu5);
-
-        jMenu8.setText("File");
-        jMenuBar3.add(jMenu8);
-
-        jMenu9.setText("Edit");
-        jMenuBar3.add(jMenu9);
-
-        jMenu10.setText("File");
-        jMenuBar4.add(jMenu10);
-
-        jMenu11.setText("Edit");
-        jMenuBar4.add(jMenu11);
-
-        jMenu14.setText("File");
-        jMenuBar5.add(jMenu14);
-
-        jMenu15.setText("Edit");
-        jMenuBar5.add(jMenu15);
-
-        jMenu16.setText("File");
-        jMenuBar6.add(jMenu16);
-
-        jMenu17.setText("Edit");
-        jMenuBar6.add(jMenu17);
-
-        jMenu18.setText("File");
-        jMenuBar7.add(jMenu18);
-
-        jMenu19.setText("Edit");
-        jMenuBar7.add(jMenu19);
-
-        jMenu22.setText("jMenu22");
-
-        jMenuItem10.setText("jMenuItem10");
-
-        jMenu24.setText("File");
-        jMenuBar8.add(jMenu24);
-
-        jMenu25.setText("Edit");
-        jMenuBar8.add(jMenu25);
-
-        jMenu26.setText("File");
-        jMenuBar9.add(jMenu26);
-
-        jMenu27.setText("Edit");
-        jMenuBar9.add(jMenu27);
-
-        jMenu28.setText("File");
-        jMenuBar10.add(jMenu28);
-
-        jMenu29.setText("Edit");
-        jMenuBar10.add(jMenu29);
-
-        jMenu30.setText("File");
-        jMenuBar11.add(jMenu30);
-
-        jMenu31.setText("Edit");
-        jMenuBar11.add(jMenu31);
-
-        jMenu2.setText("jMenu2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jPanel2.setBackground(new java.awt.Color(129, 199, 132));
+        jpanleEncabezado.setBackground(new java.awt.Color(129, 199, 132));
 
         jblEncabezado1.setFont(new java.awt.Font("Segoe UI Semilight", 1, 18)); // NOI18N
         jblEncabezado1.setText("Complejo Deportivo la 10");
@@ -198,38 +88,41 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jblEncabezado.setFont(new java.awt.Font("Showcard Gothic", 1, 24)); // NOI18N
         jblEncabezado.setText("CANCHA PRO");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(478, Short.MAX_VALUE)
-                .addComponent(jblEncabezado1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(539, 539, 539))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(500, 500, 500)
-                .addComponent(jblEncabezado, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        javax.swing.GroupLayout jpanleEncabezadoLayout = new javax.swing.GroupLayout(jpanleEncabezado);
+        jpanleEncabezado.setLayout(jpanleEncabezadoLayout);
+        jpanleEncabezadoLayout.setHorizontalGroup(
+            jpanleEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpanleEncabezadoLayout.createSequentialGroup()
+                .addGroup(jpanleEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpanleEncabezadoLayout.createSequentialGroup()
+                        .addGap(492, 492, 492)
+                        .addComponent(jblEncabezado1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jpanleEncabezadoLayout.createSequentialGroup()
+                        .addGap(516, 516, 516)
+                        .addComponent(jblEncabezado, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(543, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        jpanleEncabezadoLayout.setVerticalGroup(
+            jpanleEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanleEncabezadoLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jblEncabezado, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jblEncabezado1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51))
+                .addGap(45, 45, 45))
         );
 
-        javax.swing.GroupLayout jblpaneldecontenidoLayout = new javax.swing.GroupLayout(jblpaneldecontenido);
-        jblpaneldecontenido.setLayout(jblpaneldecontenidoLayout);
-        jblpaneldecontenidoLayout.setHorizontalGroup(
-            jblpaneldecontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jDesktopPane_menu.setBackground(new java.awt.Color(241, 248, 233));
+
+        javax.swing.GroupLayout jDesktopPane_menuLayout = new javax.swing.GroupLayout(jDesktopPane_menu);
+        jDesktopPane_menu.setLayout(jDesktopPane_menuLayout);
+        jDesktopPane_menuLayout.setHorizontalGroup(
+            jDesktopPane_menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        jblpaneldecontenidoLayout.setVerticalGroup(
-            jblpaneldecontenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 556, Short.MAX_VALUE)
+        jDesktopPane_menuLayout.setVerticalGroup(
+            jDesktopPane_menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 765, Short.MAX_VALUE)
         );
 
         jMenuBar1.setBackground(new java.awt.Color(46, 125, 50));
@@ -261,9 +154,9 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jmenu_Clientes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenu_Clientes.setPreferredSize(new java.awt.Dimension(150, 50));
 
-        jItem_gestionClientes.setText("Gestion de Clientes");
-        jItem_gestionClientes.addActionListener(this::jItem_gestionClientesActionPerformed);
-        jmenu_Clientes.add(jItem_gestionClientes);
+        jItemGestionClientes.setText("Gestion de Clientes");
+        jItemGestionClientes.addActionListener(this::jItemGestionClientesActionPerformed);
+        jmenu_Clientes.add(jItemGestionClientes);
 
         jMenuBar1.add(jmenu_Clientes);
 
@@ -273,6 +166,18 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jmenu_Pagos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenu_Pagos.setPreferredSize(new java.awt.Dimension(150, 50));
         jMenuBar1.add(jmenu_Pagos);
+
+        jMenuCanchas.setBackground(new java.awt.Color(129, 199, 132));
+        jMenuCanchas.setForeground(new java.awt.Color(255, 255, 255));
+        jMenuCanchas.setText("CANCHAS");
+        jMenuCanchas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenuCanchas.setPreferredSize(new java.awt.Dimension(150, 50));
+
+        jItemGestionCanchas.setText("Gestion de Canchas");
+        jItemGestionCanchas.addActionListener(this::jItemGestionCanchasActionPerformed);
+        jMenuCanchas.add(jItemGestionCanchas);
+
+        jMenuBar1.add(jMenuCanchas);
 
         jMenu1.setBackground(new java.awt.Color(129, 199, 132));
         jMenu1.setForeground(new java.awt.Color(255, 255, 255));
@@ -288,43 +193,45 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jMenu12.setPreferredSize(new java.awt.Dimension(150, 50));
         jMenuBar1.add(jMenu12);
 
-        jMenu20.setBackground(new java.awt.Color(129, 199, 132));
-        jMenu20.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu20.setText("CANCHAS");
-        jMenu20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenu20.setPreferredSize(new java.awt.Dimension(150, 50));
-        jMenuBar1.add(jMenu20);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jblpaneldecontenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jpanleEncabezado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jDesktopPane_menu)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jpanleEncabezado, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jblpaneldecontenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jDesktopPane_menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jItem_gestionClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jItem_gestionClientesActionPerformed
+    private void jItemGestionClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jItemGestionClientesActionPerformed
 // TODO add your handling code here:
         JInternalFrm_Cliente ventana= new JInternalFrm_Cliente(gestorClientes);
         jDesktopPane_menu.add(ventana);
         ventana.setVisible(true);
-        
-    }//GEN-LAST:event_jItem_gestionClientesActionPerformed
+        try {
+    ventana.setMaximum(true);
+     } catch (java.beans.PropertyVetoException e) {
+      System.out.println("No se pudo maximizar la ventana.");
+}
+    }//GEN-LAST:event_jItemGestionClientesActionPerformed
+
+    private void jItemGestionCanchasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jItemGestionCanchasActionPerformed
+       
+        JInternalFrm_Cancha ventana = new JInternalFrm_Cancha(gestorCanchas);
+        jDesktopPane_menu.add(ventana);
+        ventana.setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_jItemGestionCanchasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -352,58 +259,20 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem jItem_gestionClientes;
+    private javax.swing.JDesktopPane jDesktopPane_menu;
+    private javax.swing.JMenuItem jItemGestionCanchas;
+    private javax.swing.JMenuItem jItemGestionClientes;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu10;
-    private javax.swing.JMenu jMenu11;
     private javax.swing.JMenu jMenu12;
     private javax.swing.JMenu jMenu13;
-    private javax.swing.JMenu jMenu14;
-    private javax.swing.JMenu jMenu15;
-    private javax.swing.JMenu jMenu16;
-    private javax.swing.JMenu jMenu17;
-    private javax.swing.JMenu jMenu18;
-    private javax.swing.JMenu jMenu19;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu20;
-    private javax.swing.JMenu jMenu22;
     private javax.swing.JMenu jMenu23;
-    private javax.swing.JMenu jMenu24;
-    private javax.swing.JMenu jMenu25;
-    private javax.swing.JMenu jMenu26;
-    private javax.swing.JMenu jMenu27;
-    private javax.swing.JMenu jMenu28;
-    private javax.swing.JMenu jMenu29;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu30;
-    private javax.swing.JMenu jMenu31;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu8;
-    private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuBar jMenuBar10;
-    private javax.swing.JMenuBar jMenuBar11;
-    private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JMenuBar jMenuBar3;
-    private javax.swing.JMenuBar jMenuBar4;
-    private javax.swing.JMenuBar jMenuBar5;
-    private javax.swing.JMenuBar jMenuBar6;
-    private javax.swing.JMenuBar jMenuBar7;
-    private javax.swing.JMenuBar jMenuBar8;
-    private javax.swing.JMenuBar jMenuBar9;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JMenu jMenuCanchas;
     private javax.swing.JLabel jblEncabezado;
     private javax.swing.JLabel jblEncabezado1;
-    private javax.swing.JPanel jblpaneldecontenido;
     private javax.swing.JMenu jmenu_Clientes;
     private javax.swing.JMenu jmenu_Pagos;
+    private javax.swing.JPanel jpanleEncabezado;
     // End of variables declaration//GEN-END:variables
 }
