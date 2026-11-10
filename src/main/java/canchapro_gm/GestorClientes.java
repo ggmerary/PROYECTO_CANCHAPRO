@@ -85,22 +85,6 @@ public class GestorClientes {
         return false; 
     }
     
-    public boolean eliminarCliente(String codigo){
-        for(int i=0; i<cantidadClientes; i++){
-            Cliente clienteActual=listaClientes[i];
-            String codigoActual= clienteActual.getCodigo();
-            if(codigoActual.equals(codigo)){
-                for(int j=i; j<cantidadClientes-1;j++){
-                    listaClientes[j]=listaClientes[j+1];
-                    
-                }
-                listaClientes[cantidadClientes-1]=null;
-               cantidadClientes=cantidadClientes-1;
-                return true;
-            }
-        }
-        return false;
-    }
     public boolean desactivarCliente(String codigo){
         Cliente cliente=buscarClientePorCodigo(codigo);
         if(cliente!=null){
@@ -161,6 +145,7 @@ public class GestorClientes {
         }
         }
     }
+    
     public boolean guardarClientes(){
         ArchivoCliente archivo=new ArchivoCliente();
         Cliente[]clientes=obtenerClientes();

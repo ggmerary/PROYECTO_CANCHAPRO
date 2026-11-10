@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 
 public class JFrameMenuPrincipal extends javax.swing.JFrame {
     private GestorClientes gestorClientes;
+    private GestorCanchas gestorCanchas;
     private JDesktopPane jDesktopPane_menu;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameMenuPrincipal.class.getName());
