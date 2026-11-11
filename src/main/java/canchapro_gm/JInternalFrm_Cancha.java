@@ -4,6 +4,9 @@
  */
 package canchapro_gm;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -12,6 +15,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class JInternalFrm_Cancha extends javax.swing.JInternalFrame {
 private GestorCanchas gestorCanchas;
+private boolean cambiosPendientes = false;
+private boolean editandoDatos = false;
+private boolean editandoEstado = false;
     
 public JInternalFrm_Cancha(GestorCanchas gestorCanchas) {
         initComponents();
@@ -39,13 +45,63 @@ private void mostrarCanchas() {
             cancha.getCodigo(),
             cancha.getNombre(),
             cancha.getTipo(),
-            cancha.getCapacidad(),
+            cancha.getCapacidad() + " jugadores",
             cancha.getHoraApertura(),
             cancha.getHoraCierre(),
             cancha.getEstado()
         };
 
         modelo.addRow(fila);
+    }
+}
+private void cargarDatosCancha() {
+
+    String codigo = txtCodigo.getText();
+
+    Cancha cancha = gestorCanchas.buscarCanchaPorCodigo(codigo);
+
+    if (cancha != null) {
+
+        txtNombre.setText(cancha.getNombre());
+        cmboxTipo.setSelectedItem(cancha.getTipo());
+
+        cmboxCapacidad.setSelectedItem(
+                cancha.getCapacidad() + " jugadores");
+
+        int horaC = cancha.getHoraCierre().getHour();
+           int minutoC = cancha.getHoraCierre().getMinute();
+         
+           
+         int horaA = cancha.getHoraApertura().getHour();
+         int minutoA = cancha.getHoraApertura().getMinute();
+
+
+           if (horaA < 10) {
+           cmboxHoraApertura.setSelectedItem("0" + horaA);
+           } else {
+           cmboxHoraApertura.setSelectedItem("" + horaA);
+           }
+
+          if (minutoA < 10) {
+          cmboxMinutosApertura.setSelectedItem("0" + minutoA);
+          } else {
+          cmboxMinutosApertura.setSelectedItem("" + minutoA);
+          }
+  
+          if (horaC < 10) {
+          cmboxHoraCierre.setSelectedItem("0" + horaC);
+          } else {
+           cmboxHoraCierre.setSelectedItem("" + horaC);
+         }
+
+         if (minutoC < 10) {
+          cmboxMinutosCierre.setSelectedItem("0" + minutoC);
+         } else {
+          cmboxMinutosCierre.setSelectedItem("" + minutoC);
+         }
+         
+         
+        cmboxEstado.setSelectedItem(cancha.getEstado());
     }
 }
 
@@ -62,43 +118,61 @@ private void mostrarCanchas() {
         txtCodigo = new javax.swing.JTextField();
         txtNombre = new javax.swing.JTextField();
         cmboxTipo = new javax.swing.JComboBox<>();
-        txtHoraApertura = new javax.swing.JTextField();
-        txtHoraCierre = new javax.swing.JTextField();
-        cmboxEstado = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbCanchas = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         btnModificar = new javax.swing.JButton();
         btnCambiarEstado = new javax.swing.JButton();
-        btnGuardarCambios = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
+        btnGuardarCambios = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         cmboxCapacidad = new javax.swing.JComboBox<>();
+        cmboxHoraApertura = new javax.swing.JComboBox<>();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        cmboxMinutosApertura = new javax.swing.JComboBox<>();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        cmboxHoraCierre = new javax.swing.JComboBox<>();
+        jLabel13 = new javax.swing.JLabel();
+        cmboxMinutosCierre = new javax.swing.JComboBox<>();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        cmboxEstado = new javax.swing.JComboBox<>();
 
         setBackground(new java.awt.Color(241, 248, 233));
         setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setIconifiable(true);
         setMaximizable(true);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jpanelCancha.setBackground(new java.awt.Color(241, 248, 233));
 
-        txtCodigo.setText("jTextField1");
-
-        txtNombre.setText("jTextField2");
-
-        cmboxTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Futbol 5", "Futbol 7", " " }));
-
-        txtHoraApertura.setText("jTextField4");
-
-        txtHoraCierre.setText("jTextField5");
-
-        cmboxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Disponible", "Mantenimiento", "Inactiva" }));
+        cmboxTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fútbol 5", "Fútbol 7", " " }));
 
         tbCanchas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -115,13 +189,20 @@ private void mostrarCanchas() {
         });
         jScrollPane1.setViewportView(tbCanchas);
 
+        jPanel1.setBackground(new java.awt.Color(129, 199, 132));
+
         btnModificar.setText("Modificar");
+        btnModificar.addActionListener(this::btnModificarActionPerformed);
 
         btnCambiarEstado.setText("Cambiar Estado");
-
-        btnGuardarCambios.setText("Guardar Cambios");
+        btnCambiarEstado.addActionListener(this::btnCambiarEstadoActionPerformed);
 
         btnLimpiar.setText("Limpiar ");
+        btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
+
+        btnGuardarCambios.setBackground(new java.awt.Color(255, 102, 102));
+        btnGuardarCambios.setText("Guardar Cambios");
+        btnGuardarCambios.addActionListener(this::btnGuardarCambiosActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -130,8 +211,8 @@ private void mostrarCanchas() {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnLimpiar)
                     .addComponent(btnGuardarCambios)
+                    .addComponent(btnLimpiar)
                     .addComponent(btnCambiarEstado)
                     .addComponent(btnModificar))
                 .addContainerGap(79, Short.MAX_VALUE))
@@ -143,11 +224,11 @@ private void mostrarCanchas() {
                 .addComponent(btnModificar)
                 .addGap(18, 18, 18)
                 .addComponent(btnCambiarEstado)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGuardarCambios)
                 .addGap(18, 18, 18)
                 .addComponent(btnLimpiar)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(btnGuardarCambios)
+                .addGap(24, 24, 24))
         );
 
         jLabel1.setText("Código");
@@ -162,83 +243,210 @@ private void mostrarCanchas() {
 
         jLabel6.setText("Cierre");
 
+        cmboxCapacidad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "10 jugadores", "14 jugadores" }));
+        cmboxCapacidad.addActionListener(this::cmboxCapacidadActionPerformed);
+
+        cmboxHoraApertura.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", " " }));
+
+        jLabel8.setText("Hora");
+
+        jLabel9.setText("Minutos");
+
+        cmboxMinutosApertura.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel10.setText(":");
+
+        jLabel11.setText("Hora");
+
+        jLabel12.setText("Minutos");
+
+        cmboxHoraCierre.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", " " }));
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel13.setText(":");
+
+        cmboxMinutosCierre.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         jLabel7.setText("Estado");
 
-        cmboxCapacidad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "10 jugadores", "14 jugadores" }));
+        cmboxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Disponible", "Mantenimiento", "Inactiva" }));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel7)
+                .addGap(35, 35, 35)
+                .addComponent(cmboxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmboxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jpanelCanchaLayout = new javax.swing.GroupLayout(jpanelCancha);
         jpanelCancha.setLayout(jpanelCanchaLayout);
         jpanelCanchaLayout.setHorizontalGroup(
             jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
+            .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+            .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                .addGap(101, 101, 101)
+                .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                        .addGap(238, 238, 238)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
+                        .addGap(0, 437, Short.MAX_VALUE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(177, 177, 177))))
+            .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                .addGap(89, 89, 89)
                 .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jpanelCanchaLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jpanelCanchaLayout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtHoraCierre, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmboxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtHoraApertura, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmboxTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jpanelCanchaLayout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(cmboxCapacidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 406, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(71, 71, 71))
+                        .addComponent(cmboxHoraApertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(105, 105, 105))
+                    .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(cmboxCapacidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                            .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel6)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel3)
+                                .addComponent(jLabel2)
+                                .addComponent(jLabel1))
+                            .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                    .addGap(31, 31, 31)
+                                    .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                            .addComponent(cmboxHoraCierre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jLabel13)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(cmboxMinutosCierre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                            .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(36, 36, 36))
+                                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
+                                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(33, 33, 33)))
+                                                .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                                    .addComponent(cmboxMinutosApertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(jLabel10)
+                                                    .addGap(18, 18, 18)))
+                                            .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel12)
+                                                .addComponent(jLabel9)))))
+                                .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                    .addGap(37, 37, 37)
+                                    .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cmboxTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jpanelCanchaLayout.setVerticalGroup(
             jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
+                .addContainerGap(8, Short.MAX_VALUE)
                 .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
+                    .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
+                                .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel1)
+                                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)))
+                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(30, 30, 30)
                         .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addGap(18, 18, 18)
-                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addGap(18, 18, 18)
-                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmboxTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(18, 18, 18)
+                            .addComponent(jLabel3)
+                            .addComponent(cmboxTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20)
                         .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(cmboxCapacidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(2, 2, 2)
+                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel9))
+                            .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                        .addGap(20, 20, 20)
+                                        .addComponent(jLabel5))
+                                    .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel8)))
+                                .addGap(0, 2, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtHoraApertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(18, 18, 18)
-                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtHoraCierre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
-                        .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
+                            .addComponent(cmboxHoraApertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmboxMinutosApertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10))
+                        .addGap(29, 29, 29))
+                    .addGroup(jpanelCanchaLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmboxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(137, 137, 137))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
+                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel11)
+                                .addComponent(jLabel12)))
+                        .addGap(1, 1, 1)
+                        .addGroup(jpanelCanchaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmboxHoraCierre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13)
+                            .addComponent(cmboxMinutosCierre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(90, 90, 90)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(79, 79, 79))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpanelCanchaLayout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -248,13 +456,13 @@ private void mostrarCanchas() {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jpanelCancha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jpanelCancha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addContainerGap(143, Short.MAX_VALUE))
         );
 
         pack();
@@ -262,35 +470,195 @@ private void mostrarCanchas() {
 
     private void tbCanchasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbCanchasMouseClicked
         // TODO add your handling code here:
-         int fila = tbCanchas.getSelectedRow();
+    int fila = tbCanchas.getSelectedRow();
 
     if (fila >= 0) {
 
         String codigo = tbCanchas.getValueAt(fila, 0).toString();
+        txtCodigo.setText(codigo);
+         cargarDatosCancha();
 
-        Cancha cancha = gestorCanchas.buscarCanchaPorCodigo(codigo);
-
-        if (cancha != null) {
-
-            txtCodigo.setText(cancha.getCodigo());
-            txtNombre.setText(cancha.getNombre());
-
-            cmboxTipo.setSelectedItem(cancha.getTipo());
-
-            cmboxCapacidad.setSelectedItem(cancha.getCapacidad());
-
-            txtHoraApertura.setText(cancha.getHoraApertura().toString());
-
-            txtHoraCierre.setText(cancha.getHoraCierre().toString());
-
-            cmboxEstado.setSelectedItem(cancha.getEstado());
-          
-            
-            btnModificar.setEnabled(true);
-            btnCambiarEstado.setEnabled(true);
-        }
+        btnModificar.setEnabled(true);
+        btnCambiarEstado.setEnabled(true);
     }
     }//GEN-LAST:event_tbCanchasMouseClicked
+
+    private void cmboxCapacidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmboxCapacidadActionPerformed
+           // TODO add your handling code here:
+    }//GEN-LAST:event_cmboxCapacidadActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+       String codigo = txtCodigo.getText();
+    String nombre = txtNombre.getText().trim();
+    String tipo = cmboxTipo.getSelectedItem().toString();
+
+    String textoCapacidad = cmboxCapacidad.getSelectedItem().toString();
+
+    try {
+        int capacidad = Integer.parseInt(
+                textoCapacidad.replace(" jugadores", ""));
+
+        // Obtener las horas y minutos seleccionados
+        int horaApertura = Integer.parseInt(
+                cmboxHoraApertura.getSelectedItem().toString());
+
+        int minutoApertura = Integer.parseInt(
+                cmboxMinutosApertura.getSelectedItem().toString());
+
+        int horaCierre = Integer.parseInt(
+                cmboxHoraCierre.getSelectedItem().toString());
+
+        int minutoCierre = Integer.parseInt(
+                cmboxMinutosCierre.getSelectedItem().toString());
+
+        // Crear los horarios con LocalTime
+        LocalTime apertura = LocalTime.of(
+                horaApertura, minutoApertura);
+
+        LocalTime cierre = LocalTime.of(
+                horaCierre, minutoCierre);
+
+        // Buscar la cancha
+        Cancha cancha = gestorCanchas.buscarCanchaPorCodigo(codigo);
+
+        if (cancha == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se encontró la cancha.");
+            return;
+        }
+
+        // Modificar la cancha
+        boolean modificado = gestorCanchas.modificarCancha(
+                codigo,
+                nombre,
+                tipo,
+                capacidad,
+                cancha.getPrecioBase(),
+                apertura,
+                cierre
+        );
+
+        if (modificado) {
+             cambiosPendientes = true;
+
+            JOptionPane.showMessageDialog(this,
+                    "Cancha modificada correctamente.");
+
+            mostrarCanchas();
+
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo modificar la cancha.");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this,
+                "Verifique los datos ingresados.");
+    }
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnCambiarEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarEstadoActionPerformed
+    String codigo = txtCodigo.getText().trim();
+    String nuevoEstado = cmboxEstado.getSelectedItem().toString();
+
+    if (codigo.isEmpty()) {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione una cancha de la tabla.");
+        return;
+    }
+
+    boolean cambiado = gestorCanchas.cambiarEstado( codigo, nuevoEstado);
+
+    if (cambiado) {
+        cambiosPendientes = true;
+       JOptionPane.showMessageDialog(this,"Estado de la cancha actualizado correctamente.");
+
+        mostrarCanchas();
+
+    } else {
+
+        JOptionPane.showMessageDialog(this,
+                "No se pudo cambiar el estado de la cancha.");
+    }
+    }//GEN-LAST:event_btnCambiarEstadoActionPerformed
+
+    private void btnGuardarCambiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCambiosActionPerformed
+        // TODO add your handling code here:
+
+    boolean guardado = gestorCanchas.guardarCanchas();
+
+    if (guardado) {JOptionPane.showMessageDialog(this, "Los cambios se guardaron correctamente.");
+
+        cambiosPendientes = false;
+
+    } else {
+
+        JOptionPane.showMessageDialog(this,
+                "No se pudieron guardar los cambios.");
+    }
+    }//GEN-LAST:event_btnGuardarCambiosActionPerformed
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        // TODO add your handling code here:
+        if (cambiosPendientes) {
+
+        Object[] opciones = {  "Guardar", "No guardar", "Cancelar"};
+
+        int respuesta = JOptionPane.showOptionDialog(
+                this,
+                "¿Desea guardar los cambios antes de cerrar?",
+                "Cambios pendientes",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        if (respuesta == 0) {
+
+            boolean guardado = gestorCanchas.guardarCanchas();
+
+            if (guardado) {
+                cambiosPendientes = false;
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudieron guardar los cambios.");
+            }
+
+        } else if (respuesta == 1) {
+
+            gestorCanchas.cargarDatos();
+            cambiosPendientes = false;
+            dispose();
+        }
+        } else {
+        dispose();
+       }
+    }//GEN-LAST:event_formInternalFrameClosing
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        // TODO add your handling code here:
+     txtCodigo.setText("");
+    txtNombre.setText("");
+
+    cmboxTipo.setSelectedIndex(0);
+    cmboxCapacidad.setSelectedIndex(0);
+
+    cmboxHoraApertura.setSelectedIndex(0);
+    cmboxMinutosApertura.setSelectedIndex(0);
+
+    cmboxHoraCierre.setSelectedIndex(0);
+    cmboxMinutosCierre.setSelectedIndex(0);
+
+    cmboxEstado.setSelectedIndex(0);
+
+    tbCanchas.clearSelection();
+
+    btnModificar.setEnabled(false);
+    btnCambiarEstado.setEnabled(false);
+    }//GEN-LAST:event_btnLimpiarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -300,21 +668,32 @@ private void mostrarCanchas() {
     private javax.swing.JButton btnModificar;
     private javax.swing.JComboBox<String> cmboxCapacidad;
     private javax.swing.JComboBox<String> cmboxEstado;
+    private javax.swing.JComboBox<String> cmboxHoraApertura;
+    private javax.swing.JComboBox<String> cmboxHoraCierre;
+    private javax.swing.JComboBox<String> cmboxMinutosApertura;
+    private javax.swing.JComboBox<String> cmboxMinutosCierre;
     private javax.swing.JComboBox<String> cmboxTipo;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel jpanelCancha;
     private javax.swing.JTable tbCanchas;
     private javax.swing.JTextField txtCodigo;
-    private javax.swing.JTextField txtHoraApertura;
-    private javax.swing.JTextField txtHoraCierre;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }
+

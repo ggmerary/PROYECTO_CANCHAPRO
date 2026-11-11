@@ -563,7 +563,7 @@ if(guardado){
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         // TODO add your handling code here:
-        txtCodigo.setText("");
+    txtCodigo.setText("");
     txtNombre.setText("");
     txtTelefono.setText("");
     txtCorreo.setText("");
@@ -680,19 +680,14 @@ if(guardado){
         return;
     }
 
-    Object[] opciones = {
-        "Guardar",
-        "No guardar",
-        "Cancelar"
-    };
+    Object[] opciones = { "Guardar","No guardar","Cancelar"};
 
     int respuesta = JOptionPane.showOptionDialog( this, "Tiene cambios sin guardar. ¿Desea guardarlos?","Confirmar cierre",
             JOptionPane.DEFAULT_OPTION,
             JOptionPane.QUESTION_MESSAGE,
             null,
             opciones,
-            opciones[0]
-    );
+            opciones[0] );
 
     if (respuesta == 0) {
 

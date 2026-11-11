@@ -67,16 +67,16 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         jblEncabezado = new javax.swing.JLabel();
         jDesktopPane_menu = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu3 = new javax.swing.JMenu();
-        jMenu13 = new javax.swing.JMenu();
-        jMenu23 = new javax.swing.JMenu();
+        jmenuInicio = new javax.swing.JMenu();
+        jmenuReservas = new javax.swing.JMenu();
+        jmenuDisponibilidad = new javax.swing.JMenu();
         jmenu_Clientes = new javax.swing.JMenu();
         jItemGestionClientes = new javax.swing.JMenuItem();
-        jmenu_Pagos = new javax.swing.JMenu();
-        jMenuCanchas = new javax.swing.JMenu();
+        jmenuPagos = new javax.swing.JMenu();
+        jmenuCanchas = new javax.swing.JMenu();
         jItemGestionCanchas = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu12 = new javax.swing.JMenu();
+        jmenuReportes = new javax.swing.JMenu();
+        jmenuConfiguracion = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -127,26 +127,26 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
 
         jMenuBar1.setBackground(new java.awt.Color(46, 125, 50));
 
-        jMenu3.setBackground(new java.awt.Color(255, 0, 204));
-        jMenu3.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu3.setText("INICIO");
-        jMenu3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenu3.setPreferredSize(new java.awt.Dimension(150, 50));
-        jMenuBar1.add(jMenu3);
+        jmenuInicio.setBackground(new java.awt.Color(255, 0, 204));
+        jmenuInicio.setForeground(new java.awt.Color(255, 255, 255));
+        jmenuInicio.setText("INICIO");
+        jmenuInicio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jmenuInicio.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jmenuInicio);
 
-        jMenu13.setBackground(new java.awt.Color(204, 102, 0));
-        jMenu13.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu13.setText("RESERVAS");
-        jMenu13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenu13.setPreferredSize(new java.awt.Dimension(150, 50));
-        jMenuBar1.add(jMenu13);
+        jmenuReservas.setBackground(new java.awt.Color(204, 102, 0));
+        jmenuReservas.setForeground(new java.awt.Color(255, 255, 255));
+        jmenuReservas.setText("RESERVAS");
+        jmenuReservas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jmenuReservas.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jmenuReservas);
 
-        jMenu23.setBackground(new java.awt.Color(129, 199, 132));
-        jMenu23.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu23.setText("DISPONIBILIDAD");
-        jMenu23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenu23.setPreferredSize(new java.awt.Dimension(150, 50));
-        jMenuBar1.add(jMenu23);
+        jmenuDisponibilidad.setBackground(new java.awt.Color(129, 199, 132));
+        jmenuDisponibilidad.setForeground(new java.awt.Color(255, 255, 255));
+        jmenuDisponibilidad.setText("DISPONIBILIDAD");
+        jmenuDisponibilidad.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jmenuDisponibilidad.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jmenuDisponibilidad);
 
         jmenu_Clientes.setBackground(new java.awt.Color(129, 199, 132));
         jmenu_Clientes.setForeground(new java.awt.Color(255, 255, 255));
@@ -160,38 +160,38 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
 
         jMenuBar1.add(jmenu_Clientes);
 
-        jmenu_Pagos.setBackground(new java.awt.Color(129, 199, 132));
-        jmenu_Pagos.setForeground(new java.awt.Color(255, 255, 255));
-        jmenu_Pagos.setText("PAGOS");
-        jmenu_Pagos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jmenu_Pagos.setPreferredSize(new java.awt.Dimension(150, 50));
-        jMenuBar1.add(jmenu_Pagos);
+        jmenuPagos.setBackground(new java.awt.Color(129, 199, 132));
+        jmenuPagos.setForeground(new java.awt.Color(255, 255, 255));
+        jmenuPagos.setText("PAGOS");
+        jmenuPagos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jmenuPagos.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jmenuPagos);
 
-        jMenuCanchas.setBackground(new java.awt.Color(129, 199, 132));
-        jMenuCanchas.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuCanchas.setText("CANCHAS");
-        jMenuCanchas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenuCanchas.setPreferredSize(new java.awt.Dimension(150, 50));
+        jmenuCanchas.setBackground(new java.awt.Color(129, 199, 132));
+        jmenuCanchas.setForeground(new java.awt.Color(255, 255, 255));
+        jmenuCanchas.setText("CANCHAS");
+        jmenuCanchas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jmenuCanchas.setPreferredSize(new java.awt.Dimension(150, 50));
 
         jItemGestionCanchas.setText("Gestion de Canchas");
         jItemGestionCanchas.addActionListener(this::jItemGestionCanchasActionPerformed);
-        jMenuCanchas.add(jItemGestionCanchas);
+        jmenuCanchas.add(jItemGestionCanchas);
 
-        jMenuBar1.add(jMenuCanchas);
+        jMenuBar1.add(jmenuCanchas);
 
-        jMenu1.setBackground(new java.awt.Color(129, 199, 132));
-        jMenu1.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu1.setText("REPORTES");
-        jMenu1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenu1.setPreferredSize(new java.awt.Dimension(150, 50));
-        jMenuBar1.add(jMenu1);
+        jmenuReportes.setBackground(new java.awt.Color(129, 199, 132));
+        jmenuReportes.setForeground(new java.awt.Color(255, 255, 255));
+        jmenuReportes.setText("REPORTES");
+        jmenuReportes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jmenuReportes.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jmenuReportes);
 
-        jMenu12.setBackground(new java.awt.Color(129, 199, 132));
-        jMenu12.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu12.setText("CONFIGURACION");
-        jMenu12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenu12.setPreferredSize(new java.awt.Dimension(150, 50));
-        jMenuBar1.add(jMenu12);
+        jmenuConfiguracion.setBackground(new java.awt.Color(129, 199, 132));
+        jmenuConfiguracion.setForeground(new java.awt.Color(255, 255, 255));
+        jmenuConfiguracion.setText("CONFIGURACION");
+        jmenuConfiguracion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jmenuConfiguracion.setPreferredSize(new java.awt.Dimension(150, 50));
+        jMenuBar1.add(jmenuConfiguracion);
 
         setJMenuBar(jMenuBar1);
 
@@ -262,17 +262,17 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
     private javax.swing.JDesktopPane jDesktopPane_menu;
     private javax.swing.JMenuItem jItemGestionCanchas;
     private javax.swing.JMenuItem jItemGestionClientes;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu12;
-    private javax.swing.JMenu jMenu13;
-    private javax.swing.JMenu jMenu23;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenu jMenuCanchas;
     private javax.swing.JLabel jblEncabezado;
     private javax.swing.JLabel jblEncabezado1;
+    private javax.swing.JMenu jmenuCanchas;
+    private javax.swing.JMenu jmenuConfiguracion;
+    private javax.swing.JMenu jmenuDisponibilidad;
+    private javax.swing.JMenu jmenuInicio;
+    private javax.swing.JMenu jmenuPagos;
+    private javax.swing.JMenu jmenuReportes;
+    private javax.swing.JMenu jmenuReservas;
     private javax.swing.JMenu jmenu_Clientes;
-    private javax.swing.JMenu jmenu_Pagos;
     private javax.swing.JPanel jpanleEncabezado;
     // End of variables declaration//GEN-END:variables
 }
