@@ -70,9 +70,9 @@ public class GestorClientes {
         }
         Cliente nuevoCliente=new Cliente(codigo, nombre.trim(),telefono.trim(),correo.trim(), LocalDate.now());
         listaClientes[cantidadClientes]=nuevoCliente;
-         cantidadClientes++;
-         correlativoCodigo++;
-         return nuevoCliente;
+        cantidadClientes++;
+        correlativoCodigo++;
+        return nuevoCliente;
     }
     
     public boolean modificarCliente(String codigo, String nombre, String telefono, String correo){
