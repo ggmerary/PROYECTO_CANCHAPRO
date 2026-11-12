@@ -12,86 +12,139 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalTime;
 
-
 public class ArchivoCancha {
-    private String archivo="canchas.csv";
-    public boolean guardarCanchas(Cancha[]listaCanchas, int cantidadCanchas){
-        try(BufferedWriter bw=new BufferedWriter(new FileWriter(archivo))){
-            for(int i=0;i<cantidadCanchas; i++){
-                Cancha cancha=listaCanchas[i];
+
+    private String archivo = "canchas.csv";
+
+    public boolean guardarCanchas(Cancha[] listaCanchas,
+            int cantidadCanchas) {
+
+        if (listaCanchas == null
+                || cantidadCanchas < 0
+                || cantidadCanchas > listaCanchas.length) {
+            return false;
+        }
+
+        try (BufferedWriter bw =
+                new BufferedWriter(new FileWriter(archivo))) {
+
+            for (int i = 0; i < cantidadCanchas; i++) {
+
+                Cancha cancha = listaCanchas[i];
+
+                if (cancha == null) {
+                    return false;
+                }
+
                 bw.write(
-                        cancha.getCodigo()+","
-                        +cancha.getNombre()+","
-                        +cancha.getTipo()+","
-                        +cancha.getCapacidad()+","
-                        +cancha.getPrecioBase()+","
-                        +cancha.getEstado()+","
-                        +cancha.getHoraApertura()+","
-                        +cancha.getHoraCierre()
+                        cancha.getCodigo() + ","
+                        + cancha.getNombre() + ","
+                        + cancha.getTipo() + ","
+                        + cancha.getCapacidad() + ","
+                        + cancha.getEstado() + ","
+                        + cancha.getHoraApertura() + ","
+                        + cancha.getHoraCierre()
                 );
+
                 bw.newLine();
             }
+
             return true;
-        }catch (IOException e){
-            System.out.println("error al guardar canchas: "+e.getMessage());
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "Error al guardar canchas: " + e.getMessage()
+            );
+
             return false;
         }
     }
-    public Cancha[]cargarCanchas(){
-        File fichero=new File(archivo);
-        if(!fichero.exists()){
+
+    public Cancha[] cargarCanchas() {
+
+        File fichero = new File(archivo);
+
+        if (!fichero.exists()) {
             return null;
         }
-        Cancha[]canchasCargadas=new Cancha[3];
-        int cantidad=0;
-        try(BufferedReader br=new BufferedReader(new FileReader(archivo))){
-           String linea = br.readLine();
 
-           while (linea != null) {
+        Cancha[] canchasCargadas = new Cancha[100];
+        int cantidad = 0;
 
-           if (!linea.trim().isEmpty()) {
+        try (BufferedReader br =new BufferedReader(new FileReader(archivo))) {
 
-           String[] datos = linea.split(",", -1);
-                
-                if(datos.length!=8||cantidad>=3){
-                return null;
-            }
-                String codigo=datos[0].trim();
-                String nombre=datos[1].trim();
-                String tipo=datos[2].trim();
-                
-                int capacidad=Integer.parseInt(datos[3].trim());
-                double precioBase=Double.parseDouble(datos[4].trim());
-                String estado=datos[5].trim();
-                LocalTime horaApertura=LocalTime.parse(datos[6].trim());
-                LocalTime horaCierre=LocalTime.parse(datos[7].trim());
-                if(nombre.isEmpty()||tipo.isEmpty()||capacidad<=0||precioBase<0||!horaCierre.isAfter(horaApertura)){
-                    return null;
+            String linea = br.readLine();
+
+            while (linea != null) {
+
+                if (!linea.trim().isEmpty()) {
+
+                    String[] datos = linea.split(",", -1);
+
+                    if (datos.length != 7 || cantidad >= 100) {
+                        return null;
+                    }
+
+                    String codigo = datos[0].trim();
+                    String nombre = datos[1].trim();
+                    String tipo = datos[2].trim();
+
+                    int capacidad =
+                            Integer.parseInt(datos[3].trim());
+
+
+                    String estado = datos[4].trim();
+
+                    LocalTime horaApertura =LocalTime.parse(datos[5].trim());
+
+                    LocalTime horaCierre =LocalTime.parse(datos[6].trim());
+
+                  
+                    if (codigo.isEmpty()
+                            || nombre.isEmpty()
+                            || tipo.isEmpty()
+                            || capacidad <= 0
+                            || !horaCierre.isAfter(horaApertura)) {
+
+                        return null;
+                    }
+
+                 
+                    if (!estado.equalsIgnoreCase("Disponible")
+                            && !estado.equalsIgnoreCase("Mantenimiento")
+                            && !estado.equalsIgnoreCase("Inactiva")) {
+
+                        return null;
+                    }
+
+                    Cancha cancha = new Cancha(
+                            codigo,
+                            nombre,
+                            tipo,
+                            capacidad,
+                            horaApertura,
+                            horaCierre
+                    );
+
+                    cancha.setEstado(estado);
+
+                    canchasCargadas[cantidad] = cancha;
+                    cantidad++;
                 }
-                if(!estado.equalsIgnoreCase("Disponible")&&!estado.equalsIgnoreCase("Mantenimiento")
-                        &&!estado.equalsIgnoreCase("Inactiva")){
-                    return null;
-                }
-                    
-                
-                Cancha cancha=new Cancha(codigo, nombre, tipo, capacidad, precioBase, horaApertura, horaCierre);
-                cancha.setEstado(estado);
-                canchasCargadas[cantidad]=cancha;
-                cantidad++;
-           }
-           linea=br.readLine();
-                
+
+                linea = br.readLine();
             }
-            if(cantidad!=3){
-                return null;
-            }
+
             return canchasCargadas;
-            
-        }catch(IOException e){
-            System.out.println("error al cargar canchas: "+e.getMessage());
+
+        } catch (IOException | IllegalArgumentException e) {
+
+            System.out.println(
+                    "Error al cargar canchas: " + e.getMessage()
+            );
+
             return null;
         }
     }
-    
-    
 }
