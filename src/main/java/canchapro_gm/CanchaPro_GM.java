@@ -21,7 +21,11 @@ public class CanchaPro_GM {
 
 
 
-        // 1. Crear una reserva
+        
+        // =====================================
+        // 1. CREAR RESERVA DE PRUEBA
+        // =====================================
+
         Reserva reserva = new Reserva(
                 "R001",
                 "C005",
@@ -29,74 +33,50 @@ public class CanchaPro_GM {
                 LocalDate.of(2026, 11, 15),
                 LocalTime.of(14, 0),
                 120,
-                500
+                500.00
         );
 
-        // 2. Mostrar estado inicial
-        System.out.println("Estado inicial: " + reserva.getEstado());
+        System.out.println("===== RESERVA =====");
+        System.out.println("Codigo: " + reserva.getCodigo());
+        System.out.println("Estado: " + reserva.getEstado());
+        System.out.println("Total: Q" + reserva.getTotal());
 
-        // 3. Registrar un pago
-        boolean pagoRegistrado = reserva.registrarPago(200);
+        // =====================================
+        // 2. CREAR GESTOR DE RESERVAS
+        // =====================================
 
-        if (pagoRegistrado) {
+        Tarifa tarifa = new Tarifa();
 
-            System.out.println("Pago registrado correctamente");
+        GestorReservas gestorReservas =
+                new GestorReservas(100, tarifa);
 
-            // 4. Confirmar la reserva
-            boolean confirmada = reserva.confirmar();
+        // Agregar la reserva al gestor
+        Reserva[] reservasPrueba = new Reserva[1];
 
-            if (confirmada) {
-                System.out.println("Reserva confirmada");
-                System.out.println("Estado: " + reserva.getEstado());
-                System.out.println("Saldo: Q" + reserva.calcularSaldo());
-            }
+        reservasPrueba[0] = reserva;
 
-        } else {
-            System.out.println("No se pudo registrar el pago");
-        }
-    
-     // Crear gestor de servicios
-        GestorServiciosAdicionales gestor =
+        gestorReservas.establecerReservas(reservasPrueba);
+
+        // =====================================
+        // 3. PROBAR SERVICIOS ADICIONALES
+        // =====================================
+
+        System.out.println();
+        System.out.println("===== SERVICIOS =====");
+
+        ArchivoServicio archivoServicio =
+                new ArchivoServicio();
+
+        ServicioAdicional[] serviciosCargados =
+                archivoServicio.cargarServicios(50);
+
+        GestorServiciosAdicionales gestorServicios =
                 new GestorServiciosAdicionales(50);
 
-        // Crear servicios
-        ServicioAdicional servicio1 =
-                new ServicioAdicional("S001", "Balón", 25.00);
-
-        ServicioAdicional servicio2 =
-                new ServicioAdicional("S002", "Chalecos", 20.00);
-
-        ServicioAdicional servicio3 =
-                new ServicioAdicional("S003", "Árbitro", 100.00);
-
-        // Agregar servicios al gestor
-        gestor.agregarServicio(servicio1);
-        gestor.agregarServicio(servicio2);
-        gestor.agregarServicio(servicio3);
-
-        // Guardar en CSV
-        if (gestor.guardarServicios()) {
-            System.out.println("Servicios guardados correctamente");
-        } else {
-            System.out.println("Error al guardar servicios");
-        }
-
-        // Crear otro gestor para comprobar la carga
-        GestorServiciosAdicionales gestorCargado =
-                new GestorServiciosAdicionales(50);
-
-        ArchivoServicio archivo = new ArchivoServicio();
-
-        ServicioAdicional[] cargados =
-                archivo.cargarServicios(50);
-
-        gestorCargado.establecerServicios(cargados);
-
-        // Mostrar servicios recuperados
-        System.out.println("SERVICIOS CARGADOS:");
+        gestorServicios.establecerServicios(serviciosCargados);
 
         ServicioAdicional[] servicios =
-                gestorCargado.obtenerServicios();
+                gestorServicios.obtenerServicios();
 
         for (int i = 0; i < servicios.length; i++) {
 
@@ -106,6 +86,227 @@ public class CanchaPro_GM {
                     servicios[i].getPrecio()
             );
         }
+
+        // =====================================
+        // 4. CREAR GESTOR DE PAGOS
+        // =====================================
+
+        GestorPago gestorPagos =
+                new GestorPago(100, gestorReservas);
+
+        System.out.println();
+        System.out.println("===== PRUEBA DE PAGOS =====");
+
+        // Buscar la reserva
+        Reserva reservaEncontrada =
+                gestorReservas.buscarReserva("R001");
+
+        if (reservaEncontrada != null) {
+
+            System.out.println(
+                    "Reserva: " + reservaEncontrada.getCodigo()
+            );
+
+            System.out.println(
+                    "Total: Q" + reservaEncontrada.getTotal()
+            );
+
+            System.out.println(
+                    "Saldo inicial: Q" +
+                    reservaEncontrada.calcularSaldo()
+            );
+
+            // =====================================
+            // 5. REGISTRAR PRIMER ABONO
+            // =====================================
+
+            Pago pago1 = gestorPagos.registrarPago(
+                    "R001",
+                    100.00,
+                    MetodoPago.EFECTIVO,
+                    "Primer anticipo"
+            );
+
+            if (pago1 != null) {
+
+                System.out.println(
+                        "Primer pago registrado: " +
+                        pago1.getCodigo()
+                );
+
+            } else {
+
+                System.out.println(
+                        "No se pudo registrar el primer pago"
+                );
+            }
+
+            // =====================================
+            // 6. REGISTRAR SEGUNDO ABONO
+            // =====================================
+
+            Pago pago2 = gestorPagos.registrarPago(
+                    "R001",
+                    50.00,
+                    MetodoPago.TRANSFERENCIA,
+                    "Segundo abono"
+            );
+
+            if (pago2 != null) {
+
+                System.out.println(
+                        "Segundo pago registrado: " +
+                        pago2.getCodigo()
+                );
+
+            } else {
+
+                System.out.println(
+                        "No se pudo registrar el segundo pago"
+                );
+            }
+
+            // =====================================
+            // 7. CONSULTAR SALDO
+            // =====================================
+
+            System.out.println();
+            System.out.println("===== CONSULTA DE SALDO =====");
+
+            System.out.println(
+                    "Total de reserva: Q" +
+                    reservaEncontrada.getTotal()
+            );
+
+            System.out.println(
+                    "Total pagado: Q" +
+                    reservaEncontrada.getTotalPagado()
+            );
+
+            System.out.println(
+                    "Saldo pendiente: Q" +
+                    reservaEncontrada.calcularSaldo()
+            );
+
+        } else {
+
+            System.out.println("No se encontro la reserva R001");
+        }
+
+        // =====================================
+        // 8. GUARDAR PAGOS EN CSV
+        // =====================================
+
+        // ACTIVAR SOLO EN UNA COPIA DE PRUEBA.
+        // guardarPagos sobrescribe pagos.csv.
+
+        // if (gestorPagos.guardarPagos()) {
+        //     System.out.println("Pagos guardados correctamente");
+        // } else {
+        //     System.out.println("Error al guardar pagos");
+        // }
+
+        // =====================================
+        // 9. CONSULTAR PAGOS REGISTRADOS
+        // =====================================
+
+        System.out.println();
+        System.out.println("===== HISTORIAL DE PAGOS =====");
+
+        Pago[] pagos =
+                gestorPagos.obtenerPagosPorReserva("R001");
+
+        for (int i = 0; i < pagos.length; i++) {
+
+            System.out.println(
+                    "Codigo: " + pagos[i].getCodigo()
+            );
+
+            System.out.println(
+                    "Fecha: " + pagos[i].getFecha()
+            );
+
+            System.out.println(
+                    "Hora: " + pagos[i].getHora()
+            );
+
+            System.out.println(
+                    "Monto: Q" + pagos[i].getMonto()
+            );
+
+            System.out.println(
+                    "Metodo: " + pagos[i].getMetodoPago()
+            );
+
+            System.out.println(
+                    "Observacion: " + pagos[i].getObservacion()
+            );
+
+            System.out.println("-------------------------");
+        }
+
+        // =====================================
+        // 10. PRUEBA DE CARGA DESDE CSV
+        // =====================================
+
+        // Después de activar el guardado en una
+        // copia de prueba, puedes descomentar:
+
+        /*
+        ArchivoPago archivoPago = new ArchivoPago();
+
+        Pago[] pagosCargados =
+                archivoPago.cargarPagos(100);
+
+        GestorPagos gestorCargado =
+                new GestorPagos(100, gestorReservas);
+
+        gestorCargado.establecerPagos(pagosCargados);
+
+        System.out.println("PAGOS RECUPERADOS:");
+
+        Pago[] recuperados = gestorCargado.obtenerPagos();
+
+        for (int i = 0; i < recuperados.length; i++) {
+
+            System.out.println(
+                    recuperados[i].getCodigo() + " - Q" +
+                    recuperados[i].getMonto()
+            );
+        }
+        */
+        // Guardar pagos
+if (gestorPagos.guardarPagos()) {
+    System.out.println("Pagos guardados correctamente");
 }
+
+// Cargar pagos desde el archivo
+ArchivoPago archivoPago = new ArchivoPago();
+
+Pago[] pagosCargados = archivoPago.cargarPagos(100);
+
+GestorPago gestorCargado =
+        new GestorPago(100, gestorReservas);
+
+gestorCargado.establecerPagos(pagosCargados);
+
+// Mostrar pagos recuperados
+Pago[] recuperados = gestorCargado.obtenerPagos();
+
+System.out.println("===== PAGOS RECUPERADOS =====");
+
+for (int i = 0; i < recuperados.length; i++) {
+
+    System.out.println(
+            recuperados[i].getCodigo() + " - " +
+            recuperados[i].getFecha() + " - " +
+            recuperados[i].getHora() + " - Q" +
+            recuperados[i].getMonto() + " - " +
+            recuperados[i].getMetodoPago()
+    );
 }
+
+    }
+}
+
 

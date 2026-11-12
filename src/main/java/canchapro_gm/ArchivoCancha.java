@@ -65,9 +65,7 @@ public class ArchivoCancha {
                 String estado=datos[5].trim();
                 LocalTime horaApertura=LocalTime.parse(datos[6].trim());
                 LocalTime horaCierre=LocalTime.parse(datos[7].trim());
-                if(nombre.isEmpty()||tipo.isEmpty()
-                        ||capacidad<=0||precioBase<0
-                        ||!horaCierre.isAfter(horaApertura)){
+                if(nombre.isEmpty()||tipo.isEmpty()||capacidad<=0||precioBase<0||!horaCierre.isAfter(horaApertura)){
                     return null;
                 }
                 if(!estado.equalsIgnoreCase("Disponible")&&!estado.equalsIgnoreCase("Mantenimiento")

@@ -4,7 +4,9 @@
  */
 package canchapro_gm;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 public class GestorPago {
@@ -90,7 +92,8 @@ public class GestorPago {
         Pago pago = new Pago(
                 codigo,
                 codigoReserva,
-                LocalDateTime.now(),
+                LocalDate.now(),
+                LocalTime.now().withNano(0),
                 monto,
                 metodoPago,
                 observacion == null ? "" : observacion
@@ -208,4 +211,5 @@ public class GestorPago {
 
         return archivo.guardarPagos(obtenerPagos());
     }
+    
 }

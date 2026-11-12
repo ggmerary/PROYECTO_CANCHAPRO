@@ -9,7 +9,9 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 public class ArchivoPago {
@@ -30,7 +32,8 @@ public class ArchivoPago {
                     bw.write(
                             pago.getCodigo() + ";" +
                             pago.getCodigoReserva() + ";" +
-                            pago.getFechaHora() + ";" +
+                            pago.getFecha() + ";" +
+                            pago.getHora() + ";" +
                             pago.getMonto() + ";" +
                             pago.getMetodoPago() + ";" +
                             pago.getObservacion()
@@ -67,27 +70,25 @@ public class ArchivoPago {
 
                     String[] datos = linea.split(";", -1);
 
-                    if (datos.length == 6) {
+                    if (datos.length == 7) {
 
                         try {
 
                             String codigo = datos[0];
                             String codigoReserva = datos[1];
 
-                            LocalDateTime fechaHora =
-                                    LocalDateTime.parse(datos[2]);
+                            LocalDate fecha = LocalDate.parse(datos[2]);
+                           LocalTime hora = LocalTime.parse(datos[3]);
+                            double monto =Double.parseDouble(datos[4]);
 
-                            double monto =
-                                    Double.parseDouble(datos[3]);
+                            MetodoPago metodo =MetodoPago.valueOf(datos[5]);
 
-                            MetodoPago metodo =
-                                    MetodoPago.valueOf(datos[4]);
-
-                            String observacion = datos[5];
+                            String observacion = datos[6];
 
                             if (codigo.isEmpty()
                                     || codigoReserva.isEmpty()
-                                    || fechaHora == null
+                                    || fecha == null
+                                    || hora==null
                                     || !Double.isFinite(monto)
                                     || monto <= 0) {
 
@@ -98,7 +99,8 @@ public class ArchivoPago {
                             Pago pago = new Pago(
                                     codigo,
                                     codigoReserva,
-                                    fechaHora,
+                                    fecha,
+                                    hora,
                                     monto,
                                     metodo,
                                     observacion

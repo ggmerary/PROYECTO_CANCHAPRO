@@ -4,24 +4,28 @@
  */
 package canchapro_gm;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 public class Pago {
     private String codigo;
     private String codigoReserva;
-    private LocalDateTime fechaHora;
+    private LocalDate fecha;
+    private LocalTime  hora;
     private double monto;
     private MetodoPago metodoPago;
     private String observacion;
 
     public Pago(String codigo, String codigoReserva,
-                LocalDateTime fechaHora, double monto,
+                LocalDate fecha, LocalTime hora , double monto,
                 MetodoPago metodoPago, String observacion) {
 
         this.codigo = codigo;
         this.codigoReserva = codigoReserva;
-        this.fechaHora = fechaHora;
+        this.fecha=fecha;
+        this.hora = hora;
         this.monto = monto;
         this.metodoPago = metodoPago;
         this.observacion = observacion;
@@ -35,8 +39,11 @@ public class Pago {
         return codigoReserva;
     }
 
-    public LocalDateTime getFechaHora() {
-        return fechaHora;
+    public LocalDate getFecha() {
+        return fecha;
+    }
+    public LocalTime getHora(){
+        return hora;
     }
 
     public double getMonto() {
