@@ -83,6 +83,7 @@ this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem3 = new javax.swing.JMenuItem();
         jpanleEncabezado = new javax.swing.JPanel();
         jblEncabezado1 = new javax.swing.JLabel();
         jblEncabezado = new javax.swing.JLabel();
@@ -93,6 +94,7 @@ this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
         jmenuReservas = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jmenuDisponibilidad = new javax.swing.JMenu();
+        jItemDisponibilidad = new javax.swing.JMenuItem();
         jmenu_Clientes = new javax.swing.JMenu();
         jItemGestionClientes = new javax.swing.JMenuItem();
         jmenuPagos = new javax.swing.JMenu();
@@ -101,6 +103,8 @@ this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
         jItemGestionCanchas = new javax.swing.JMenuItem();
         jmenuReportes = new javax.swing.JMenu();
         jmenuConfiguracion = new javax.swing.JMenu();
+
+        jMenuItem3.setText("jMenuItem3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -179,10 +183,16 @@ this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
         jmenuDisponibilidad.setText("DISPONIBILIDAD");
         jmenuDisponibilidad.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenuDisponibilidad.setPreferredSize(new java.awt.Dimension(150, 50));
+
+        jItemDisponibilidad.setText("Consultar Disponibilidad");
+        jItemDisponibilidad.addActionListener(this::jItemDisponibilidadActionPerformed);
+        jmenuDisponibilidad.add(jItemDisponibilidad);
+
         jMenuBar1.add(jmenuDisponibilidad);
 
         jmenu_Clientes.setBackground(new java.awt.Color(129, 199, 132));
         jmenu_Clientes.setForeground(new java.awt.Color(255, 255, 255));
+        jmenu_Clientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cliente.png"))); // NOI18N
         jmenu_Clientes.setText("CLIENTES");
         jmenu_Clientes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenu_Clientes.setPreferredSize(new java.awt.Dimension(150, 50));
@@ -219,7 +229,9 @@ this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
 
         jmenuReportes.setBackground(new java.awt.Color(129, 199, 132));
         jmenuReportes.setForeground(new java.awt.Color(255, 255, 255));
+        jmenuReportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/reportes.png"))); // NOI18N
         jmenuReportes.setText("REPORTES");
+        jmenuReportes.setAlignmentX(1.0F);
         jmenuReportes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenuReportes.setPreferredSize(new java.awt.Dimension(150, 50));
         jMenuBar1.add(jmenuReportes);
@@ -283,6 +295,22 @@ this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
      ventanaPagos.setVisible(true);  // TODO add your handling code here:
     }//GEN-LAST:event_jItemGestionPagosActionPerformed
 
+    private void jItemDisponibilidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jItemDisponibilidadActionPerformed
+JInternalFrmDisponibilidad ventana =new JInternalFrmDisponibilidad(
+                gestorDisponibilidad,
+                gestorCanchas);
+
+      jDesktopPane_menu.add(ventana);
+       ventana.setVisible(true); 
+       
+   try { ventana.setMaximum(true);
+    }    catch (java.beans.PropertyVetoException e) {
+    JOptionPane.showMessageDialog(this,
+            "No se pudo maximizar la ventana.");
+}
+       // TODO add your handling code here:
+    }//GEN-LAST:event_jItemDisponibilidadActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -310,12 +338,14 @@ this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane jDesktopPane_menu;
+    private javax.swing.JMenuItem jItemDisponibilidad;
     private javax.swing.JMenuItem jItemGestionCanchas;
     private javax.swing.JMenuItem jItemGestionClientes;
     private javax.swing.JMenuItem jItemGestionPagos;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JLabel jblEncabezado;
     private javax.swing.JLabel jblEncabezado1;
     private javax.swing.JMenu jmenuCanchas;
