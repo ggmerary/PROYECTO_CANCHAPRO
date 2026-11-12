@@ -19,6 +19,7 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     private GestorReservas gestorReservas;
     private GestorDisponibilidad gestorDisponibilidad;
     private Tarifa tarifa;
+    private GestorPago gestorPagos;
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameMenuPrincipal.class.getName());
 
@@ -55,10 +56,20 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
     gestorDisponibilidad=new GestorDisponibilidad(gestorReservas, gestorCanchas);
 
     //=======================================
-    this.setSize(new Dimension(1200, 700));
-    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-    this.setLocationRelativeTo(null);
-    this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
+
+    gestorPagos = new GestorPago(200, gestorReservas);
+
+    // Cargar los pagos guardados
+    ArchivoPago archivoPago = new ArchivoPago();
+
+    Pago[] pagosCargados = archivoPago.cargarPagos(200);
+
+gestorPagos.establecerPagos(pagosCargados);    
+//============================================
+this.setSize(new Dimension(1200, 700));
+this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+this.setLocationRelativeTo(null);
+this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
 
    
     }
@@ -85,6 +96,7 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         jmenu_Clientes = new javax.swing.JMenu();
         jItemGestionClientes = new javax.swing.JMenuItem();
         jmenuPagos = new javax.swing.JMenu();
+        jItemGestionPagos = new javax.swing.JMenuItem();
         jmenuCanchas = new javax.swing.JMenu();
         jItemGestionCanchas = new javax.swing.JMenuItem();
         jmenuReportes = new javax.swing.JMenu();
@@ -186,6 +198,11 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         jmenuPagos.setText("PAGOS");
         jmenuPagos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenuPagos.setPreferredSize(new java.awt.Dimension(150, 50));
+
+        jItemGestionPagos.setText("Gestion Pagos");
+        jItemGestionPagos.addActionListener(this::jItemGestionPagosActionPerformed);
+        jmenuPagos.add(jItemGestionPagos);
+
         jMenuBar1.add(jmenuPagos);
 
         jmenuCanchas.setBackground(new java.awt.Color(129, 199, 132));
@@ -258,6 +275,14 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void jItemGestionPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jItemGestionPagosActionPerformed
+      JInternalFrmPagos ventanaPagos =new JInternalFrmPagos(gestorReservas, gestorPagos);
+
+     jDesktopPane_menu.add(ventanaPagos);
+
+     ventanaPagos.setVisible(true);  // TODO add your handling code here:
+    }//GEN-LAST:event_jItemGestionPagosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -287,6 +312,7 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
     private javax.swing.JDesktopPane jDesktopPane_menu;
     private javax.swing.JMenuItem jItemGestionCanchas;
     private javax.swing.JMenuItem jItemGestionClientes;
+    private javax.swing.JMenuItem jItemGestionPagos;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
