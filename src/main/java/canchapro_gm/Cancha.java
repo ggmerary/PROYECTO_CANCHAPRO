@@ -6,10 +6,7 @@ package canchapro_gm;
 
 import java.time.LocalTime;
 
-/**
- *
- * @author genesis
- */
+
 public class Cancha {
     private String codigo;
     private String nombre;
@@ -78,11 +75,9 @@ public class Cancha {
           return estado.equalsIgnoreCase("Disponible");
       }
       public boolean estaEnHorario(LocalTime horaInicio,LocalTime horaFin){
-          boolean inicioValido =
-            !horaInicio.isBefore(horaApertura);
+          boolean inicioValido =!horaInicio.isBefore(horaApertura);
 
-          boolean finValido =
-            !horaFin.isAfter(horaCierre);
+          boolean finValido =!horaFin.isAfter(horaCierre);
 
           boolean ordenCorrecto =
             horaFin.isAfter(horaInicio);

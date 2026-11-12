@@ -6,6 +6,8 @@ package canchapro_gm;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -14,6 +16,9 @@ import javax.swing.JOptionPane;
 public class JFrameMenuPrincipal extends javax.swing.JFrame {
     private GestorClientes gestorClientes;
     private GestorCanchas gestorCanchas;
+    private GestorReservas gestorReservas;
+    private GestorDisponibilidad gestorDisponibilidad;
+    private Tarifa tarifa;
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameMenuPrincipal.class.getName());
 
@@ -25,18 +30,15 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         getContentPane().removeAll();
 
 getContentPane().setLayout(new BorderLayout());
-
-getContentPane().add(
-        jpanleEncabezado, BorderLayout.NORTH);
-
+getContentPane().add(jpanleEncabezado, BorderLayout.NORTH);
 getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         
-     
+     //==============================================================
     gestorClientes =new GestorClientes(100);
     ArchivoCliente archivo=new ArchivoCliente();
     Cliente[]clientesCargados=archivo.cargarClientes(100);
     gestorClientes.establecerClientes(clientesCargados);
-    
+    //==============================================================
     gestorCanchas = new GestorCanchas();
 
      if (!gestorCanchas.cargarDatos()) {
@@ -44,7 +46,15 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
     JOptionPane.showMessageDialog(this,
             "No se pudieron cargar las canchas.");
     }
-   
+     //===========================================================
+     tarifa=new Tarifa();
+    gestorReservas=new GestorReservas(200, tarifa);
+    ArchivoReserva archivoReserva=new ArchivoReserva();
+    Reserva[] reservasCargadas=archivoReserva.cargarReservas(200);
+    gestorReservas.establecerReservas(reservasCargadas);
+    gestorDisponibilidad=new GestorDisponibilidad(gestorReservas, gestorCanchas);
+
+    //=======================================
     this.setSize(new Dimension(1200, 700));
     this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     this.setLocationRelativeTo(null);
@@ -68,7 +78,9 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         jDesktopPane_menu = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jmenuInicio = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jmenuReservas = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jmenuDisponibilidad = new javax.swing.JMenu();
         jmenu_Clientes = new javax.swing.JMenu();
         jItemGestionClientes = new javax.swing.JMenuItem();
@@ -132,6 +144,11 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         jmenuInicio.setText("INICIO");
         jmenuInicio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenuInicio.setPreferredSize(new java.awt.Dimension(150, 50));
+
+        jMenuItem1.setText("Guardar todo a CSV");
+        jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
+        jmenuInicio.add(jMenuItem1);
+
         jMenuBar1.add(jmenuInicio);
 
         jmenuReservas.setBackground(new java.awt.Color(204, 102, 0));
@@ -139,6 +156,10 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         jmenuReservas.setText("RESERVAS");
         jmenuReservas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenuReservas.setPreferredSize(new java.awt.Dimension(150, 50));
+
+        jMenuItem2.setText("Nueva reserva");
+        jmenuReservas.add(jMenuItem2);
+
         jMenuBar1.add(jmenuReservas);
 
         jmenuDisponibilidad.setBackground(new java.awt.Color(129, 199, 132));
@@ -200,7 +221,7 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jpanleEncabezado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jDesktopPane_menu)
+            .addComponent(jDesktopPane_menu, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,6 +254,10 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         ventana.setVisible(true);        // TODO add your handling code here:
     }//GEN-LAST:event_jItemGestionCanchasActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -263,6 +288,8 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
     private javax.swing.JMenuItem jItemGestionCanchas;
     private javax.swing.JMenuItem jItemGestionClientes;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JLabel jblEncabezado;
     private javax.swing.JLabel jblEncabezado1;
     private javax.swing.JMenu jmenuCanchas;

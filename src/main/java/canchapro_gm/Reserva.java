@@ -12,7 +12,6 @@ public class Reserva {
     private String codigo;
     private String codigoCliente;
     private String codigoCancha;
-    
     private LocalDate fecha;
     private LocalTime horaInicio;
     private LocalTime horaFin;
@@ -23,6 +22,9 @@ public class Reserva {
     private LocalDate fechaCancelacion;
     private String motivoCancelacion;
     private String usuarioResponsable;
+    private ServicioAdicional[] servicios;
+    private double[] preciosAplicados;
+    private int cantidadServicios;
     
     public Reserva(String codigo, String codigoCliente, String codigoCancha, LocalDate fecha, LocalTime horaInicio,
                    int duracionMinutos, double total ){
@@ -39,8 +41,22 @@ public class Reserva {
         this.fechaCancelacion=null;
         this.motivoCancelacion="";
         this.usuarioResponsable="";
-
+        servicios = new ServicioAdicional[10];
+        preciosAplicados = new double[10];
+        cantidadServicios = 0;
     }
+    public void restaurarDatos(double totalPagado,
+                          EstadoReserva estado,
+                          LocalDate fechaCancelacion,
+                          String motivoCancelacion,
+                          String usuarioResponsable) {
+
+    this.totalPagado = totalPagado;
+    this.estado = estado;
+    this.fechaCancelacion = fechaCancelacion;
+    this.motivoCancelacion = motivoCancelacion;
+    this.usuarioResponsable = usuarioResponsable;
+}
 
     public String getCodigo() {
         return codigo;
@@ -124,5 +140,50 @@ public class Reserva {
 
     return true;
 }
-    
+    public boolean agregarServicio(ServicioAdicional servicio) {
+
+    if (servicio == null) {
+        return false;
+    }
+
+    if (!servicio.estaActivo()) {
+        return false;
+    }
+      if (servicio.getPrecio() < 0) {
+      return false;
+    }
+
+    if (cantidadServicios >= servicios.length) {
+        return false;
+    }
+
+    for (int i = 0; i < cantidadServicios; i++) {
+
+        if (servicios[i].getCodigo().equals(servicio.getCodigo())) {
+            return false;
+        }
+    }
+
+    servicios[cantidadServicios] = servicio;
+    preciosAplicados[cantidadServicios] = servicio.getPrecio();
+    cantidadServicios++;
+
+    return true;
+}
+    public double calcularTotalServicios() {
+
+    double totalServicios = 0;
+
+    for (int i = 0; i < cantidadServicios; i++) {
+      totalServicios = totalServicios + preciosAplicados[i];
+    }
+
+    return totalServicios;
+}
+   public void actualizarTotal(double totalCancha) {
+
+    double totalServicios = calcularTotalServicios();
+
+    total = totalCancha + totalServicios;
+} 
 }

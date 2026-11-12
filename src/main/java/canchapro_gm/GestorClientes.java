@@ -16,6 +16,18 @@ public class GestorClientes {
         cantidadClientes=0;
         correlativoCodigo=1;
     }
+    public String generarCodigoCliente(){
+        String codigo;
+        if(correlativoCodigo<10){
+           codigo="C00"+correlativoCodigo;
+        }else if(correlativoCodigo<100){
+            codigo="C0"+correlativoCodigo;   
+        }else{
+            codigo="C"+correlativoCodigo;
+        }
+  
+        return codigo;
+    }
    public Cliente buscarClientePorCodigo(String codigo){
        for(int i=0; i<cantidadClientes; i++){
            Cliente clienteActual=listaClientes[i];
@@ -54,8 +66,8 @@ public class GestorClientes {
 
         return null;
         }
-        if(cantidadClientes>listaClientes.length){
-            return null;
+        if (cantidadClientes >= listaClientes.length) {
+         return null;
         }
         String codigo=generarCodigoCliente();
         
@@ -63,11 +75,7 @@ public class GestorClientes {
             correlativoCodigo++;
             codigo=generarCodigoCliente();
         }
-        Cliente encontrado=buscarClientePorCodigo(codigo);
-        
-        if(encontrado!=null){
-            return null;
-        }
+       
         Cliente nuevoCliente=new Cliente(codigo, nombre.trim(),telefono.trim(),correo.trim(), LocalDate.now());
         listaClientes[cantidadClientes]=nuevoCliente;
         cantidadClientes++;
@@ -160,18 +168,7 @@ public class GestorClientes {
 
     establecerClientes(clientesGuardados);
 }
-    public String generarCodigoCliente(){
-        String codigo;
-        if(correlativoCodigo<10){
-           codigo="C00"+correlativoCodigo;
-        }else if(correlativoCodigo<100){
-            codigo="C0"+correlativoCodigo;   
-        }else{
-            codigo="C"+correlativoCodigo;
-        }
-  
-        return codigo;
-    }
+    
     
 }
 
