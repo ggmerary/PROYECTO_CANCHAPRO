@@ -518,8 +518,7 @@ private void actualizarCapacidad() {
 
     try {
             int capacidad = Integer.parseInt(
-            txtCapacidad.getText().trim()
-    );
+            txtCapacidad.getText().trim() );
 
         int horaApertura = Integer.parseInt(
                 cmboxHoraApertura.getSelectedItem().toString());

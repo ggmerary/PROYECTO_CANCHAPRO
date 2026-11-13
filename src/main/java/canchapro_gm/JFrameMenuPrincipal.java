@@ -20,6 +20,7 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     private GestorDisponibilidad gestorDisponibilidad;
     private Tarifa tarifa;
     private GestorPago gestorPagos;
+    private GestorServiciosAdicionales gestorServicios;
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameMenuPrincipal.class.getName());
 
@@ -30,9 +31,9 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         initComponents();
         getContentPane().removeAll();
 
-getContentPane().setLayout(new BorderLayout());
-getContentPane().add(jpanleEncabezado, BorderLayout.NORTH);
-getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
+    getContentPane().setLayout(new BorderLayout());
+    getContentPane().add(jpanleEncabezado, BorderLayout.NORTH);
+    getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
         
      //==============================================================
     gestorClientes =new GestorClientes(100);
@@ -59,17 +60,25 @@ getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
 
     gestorPagos = new GestorPago(200, gestorReservas);
 
-    // Cargar los pagos guardados
     ArchivoPago archivoPago = new ArchivoPago();
 
     Pago[] pagosCargados = archivoPago.cargarPagos(200);
 
-gestorPagos.establecerPagos(pagosCargados);    
+    gestorPagos.establecerPagos(pagosCargados);    
 //============================================
-this.setSize(new Dimension(1200, 700));
-this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-this.setLocationRelativeTo(null);
-this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
+    gestorServicios = new GestorServiciosAdicionales(100);
+
+    ArchivoServicio archivoServicio = new ArchivoServicio();
+
+    ServicioAdicional[] serviciosCargados =
+        archivoServicio.cargarServicios(100);
+
+   gestorServicios.establecerServicios(serviciosCargados);
+   //=======================================================
+   this.setSize(new Dimension(1200, 700));
+   this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+   this.setLocationRelativeTo(null);
+   this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
 
    
     }
@@ -101,6 +110,8 @@ this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
         jItemGestionPagos = new javax.swing.JMenuItem();
         jmenuCanchas = new javax.swing.JMenu();
         jItemGestionCanchas = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jItemServicios = new javax.swing.JMenuItem();
         jmenuReportes = new javax.swing.JMenu();
         jmenuConfiguracion = new javax.swing.JMenu();
 
@@ -227,6 +238,14 @@ this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
 
         jMenuBar1.add(jmenuCanchas);
 
+        jMenu1.setText("SERVICIOS ADICIONALES");
+
+        jItemServicios.setText("gestion servicios");
+        jItemServicios.addActionListener(this::jItemServiciosActionPerformed);
+        jMenu1.add(jItemServicios);
+
+        jMenuBar1.add(jMenu1);
+
         jmenuReportes.setBackground(new java.awt.Color(129, 199, 132));
         jmenuReportes.setForeground(new java.awt.Color(255, 255, 255));
         jmenuReportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/reportes.png"))); // NOI18N
@@ -311,6 +330,12 @@ JInternalFrmDisponibilidad ventana =new JInternalFrmDisponibilidad(
        // TODO add your handling code here:
     }//GEN-LAST:event_jItemDisponibilidadActionPerformed
 
+    private void jItemServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jItemServiciosActionPerformed
+        JInternalFrmServiciosAdicionales ventana=new JInternalFrmServiciosAdicionales(gestorServicios);
+         jDesktopPane_menu.add(ventana);
+        ventana.setVisible(true);
+    }//GEN-LAST:event_jItemServiciosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -342,6 +367,8 @@ JInternalFrmDisponibilidad ventana =new JInternalFrmDisponibilidad(
     private javax.swing.JMenuItem jItemGestionCanchas;
     private javax.swing.JMenuItem jItemGestionClientes;
     private javax.swing.JMenuItem jItemGestionPagos;
+    private javax.swing.JMenuItem jItemServicios;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;

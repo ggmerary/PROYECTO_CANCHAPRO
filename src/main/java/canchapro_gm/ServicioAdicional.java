@@ -17,6 +17,8 @@ public class ServicioAdicional {
         this.nombre = nombre;
         this.precio = precio;
         this.activo = true;
+        
+        setPrecio(precio);
     }
 
     public String getCodigo() {

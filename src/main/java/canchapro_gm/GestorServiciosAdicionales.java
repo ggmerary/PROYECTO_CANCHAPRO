@@ -9,11 +9,27 @@ public class GestorServiciosAdicionales {
     
     private ServicioAdicional[] servicios;
     private int cantidadServicios;
+    private int correlativoCodigo;
 
     public GestorServiciosAdicionales(int capacidad) {
-
         servicios = new ServicioAdicional[capacidad];
         cantidadServicios = 0;
+        correlativoCodigo = 1;
+    }
+
+    public String generarCodigo() {
+
+        String codigo = "S";
+
+        if (correlativoCodigo < 10) {
+            codigo += "00" + correlativoCodigo;
+        } else if (correlativoCodigo < 100) {
+            codigo += "0" + correlativoCodigo;
+        } else {
+            codigo += correlativoCodigo;
+        }
+
+        return codigo;
     }
 
     public boolean agregarServicio(ServicioAdicional servicio) {
@@ -26,8 +42,18 @@ public class GestorServiciosAdicionales {
             return false;
         }
 
-        if (!Double.isFinite(servicio.getPrecio())
-                || servicio.getPrecio() < 0) {
+        double precio = servicio.getPrecio();
+
+        if (!Double.isFinite(precio)) {
+          return false;
+        }
+
+        if (precio <=0) {
+         return false;
+        }
+
+        if (servicio.getCodigo() == null|| servicio.getNombre() == null
+           || servicio.getNombre().trim().isEmpty()) {
             return false;
         }
 
@@ -38,6 +64,8 @@ public class GestorServiciosAdicionales {
         servicios[cantidadServicios] = servicio;
         cantidadServicios++;
 
+        actualizarCorrelativo(servicio.getCodigo());
+
         return true;
     }
 
@@ -46,7 +74,7 @@ public class GestorServiciosAdicionales {
         if (codigo == null) {
             return null;
         }
-
+        
         for (int i = 0; i < cantidadServicios; i++) {
 
             if (servicios[i].getCodigo().equalsIgnoreCase(codigo)) {
@@ -55,6 +83,43 @@ public class GestorServiciosAdicionales {
         }
 
         return null;
+    }
+
+
+    public boolean modificarServicio(String codigo,
+            String nombre, double precio) {
+
+        ServicioAdicional servicio = buscarServicio(codigo);
+
+        if (servicio == null) {
+            return false;
+        }
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return false;
+        }
+
+        if (!Double.isFinite(precio) || precio < 0) {
+            return false;
+        }
+
+        servicio.setNombre(nombre);
+        servicio.setPrecio(precio);
+
+        return true;
+    }
+
+    public boolean cambiarEstado(String codigo, boolean activo) {
+
+        ServicioAdicional servicio = buscarServicio(codigo);
+
+        if (servicio == null) {
+            return false;
+        }
+
+        servicio.setActivo(activo);
+
+        return true;
     }
 
     public ServicioAdicional[] obtenerServicios() {
@@ -68,34 +133,64 @@ public class GestorServiciosAdicionales {
 
         return resultado;
     }
-    public void establecerServicios(ServicioAdicional[] serviciosCargados) {
 
-    cantidadServicios = 0;
 
-    // Limpiar el arreglo
-    for (int i = 0; i < servicios.length; i++) {
-        servicios[i] = null;
-    }
+    public void establecerServicios(
+            ServicioAdicional[] serviciosCargados) {
 
-    if (serviciosCargados == null) {
-        return;
-    }
+        cantidadServicios = 0;
+        correlativoCodigo = 1;
 
-    // Copiar los servicios cargados
-    for (int i = 0; i < serviciosCargados.length; i++) {
+        for (int i = 0; i < servicios.length; i++) {
+            servicios[i] = null;
+        }
 
-        if (serviciosCargados[i] != null
-                && cantidadServicios < servicios.length) {
+        if (serviciosCargados == null) {
+            return;
+        }
 
-            servicios[cantidadServicios] = serviciosCargados[i];
-            cantidadServicios++;
+        for (int i = 0; i < serviciosCargados.length; i++) {
+
+            if (serviciosCargados[i] != null
+                    && cantidadServicios < servicios.length) {
+
+                servicios[cantidadServicios] = serviciosCargados[i];
+                cantidadServicios++;
+
+                actualizarCorrelativo(
+                        serviciosCargados[i].getCodigo());
+            }
         }
     }
-}
+
+  
+    private void actualizarCorrelativo(String codigo) {
+
+        if (codigo == null) {
+            return;
+        }
+
+        if (codigo.matches("S[0-9]+")) {
+
+            try {
+                int numero = Integer.parseInt(codigo.substring(1));
+
+                if (numero >= correlativoCodigo) {
+                    correlativoCodigo = numero + 1;
+                }
+
+            } catch (NumberFormatException e) {
+                // Ignorar códigos numéricos demasiado grandes
+            }
+        }
+    }
+
     public boolean guardarServicios() {
 
-    ArchivoServicio archivo = new ArchivoServicio();
+        ArchivoServicio archivo = new ArchivoServicio();
 
-    return archivo.guardarServicios(obtenerServicios());
+        return archivo.guardarServicios(obtenerServicios());
+    }
 }
-}
+   
+
