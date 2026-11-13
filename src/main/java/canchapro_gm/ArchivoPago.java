@@ -20,8 +20,8 @@ public class ArchivoPago {
 
     public boolean guardarPagos(Pago[] pagos) {
 
-        try (BufferedWriter bw =
-                new BufferedWriter(new FileWriter(archivo))) {
+        try (FileWriter fw = new FileWriter(archivo);
+         BufferedWriter bw = new BufferedWriter(fw)) {
 
             for (int i = 0; i < pagos.length; i++) {
 

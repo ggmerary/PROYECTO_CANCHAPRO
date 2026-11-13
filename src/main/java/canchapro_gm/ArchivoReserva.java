@@ -23,7 +23,8 @@ public class ArchivoReserva {
             return false;
         }
 
-        try (BufferedWriter bw =new BufferedWriter(new FileWriter(archivo))) {
+        try (FileWriter fw = new FileWriter(archivo);
+             BufferedWriter bw = new BufferedWriter(fw)) {
 
             for (int i = 0; i < reservas.length; i++) {
 
@@ -76,8 +77,9 @@ public class ArchivoReserva {
 
         int cantidad = 0;
 
-        try (BufferedReader br =
-                new BufferedReader(new FileReader(archivo))) {
+            try (FileReader fr = new FileReader(archivo);
+            BufferedReader br = new BufferedReader(fr)) {
+
 
             String linea = br.readLine();
 

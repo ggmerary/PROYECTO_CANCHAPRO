@@ -40,7 +40,7 @@ public class Tarifa {
         }
     }
 
-    // Método 2: Calcular el total
+ 
 public double calcularTotal(LocalDate fecha,
                             LocalTime horaInicio,
                             int duracionHoras) {

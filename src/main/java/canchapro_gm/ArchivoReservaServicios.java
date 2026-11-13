@@ -14,15 +14,14 @@ import java.io.IOException;
 public class ArchivoReservaServicios {
     private String archivo = "reserva_servicios.csv";
 
-    // GUARDAR SERVICIOS DE TODAS LAS RESERVAS
     public boolean guardarServiciosReservas(Reserva[] reservas) {
 
         if (reservas == null) {
             return false;
         }
 
-        try (BufferedWriter bw =
-                new BufferedWriter(new FileWriter(archivo))) {
+            try (FileWriter fw = new FileWriter(archivo);
+            BufferedWriter bw = new BufferedWriter(fw)) {
 
             for (int i = 0; i < reservas.length; i++) {
 
@@ -67,7 +66,7 @@ public class ArchivoReservaServicios {
         }
     }
 
-    // CARGAR SERVICIOS EN LAS RESERVAS
+ 
     public void cargarServiciosReservas(
             Reserva[] reservas,
             GestorServiciosAdicionales gestorServicios) {
@@ -76,10 +75,10 @@ public class ArchivoReservaServicios {
             return;
         }
 
-        try (BufferedReader br =
-                new BufferedReader(new FileReader(archivo))) {
+        try (FileReader fr = new FileReader(archivo);
+        BufferedReader br = new BufferedReader(fr)) {
 
-            String linea = br.readLine();
+        String linea = br.readLine();
 
             while (linea != null) {
 
@@ -112,13 +111,11 @@ public class ArchivoReservaServicios {
                                 }
                             }
 
-                            // BUSCAR SERVICIO EN EL CATALOGO
-                            ServicioAdicional servicio =
-                                    gestorServicios.buscarServicio(
-                                            codigoServicio
+                            
+                            ServicioAdicional servicio =gestorServicios.buscarServicio(codigoServicio
                                     );
 
-                            // RESTAURAR SERVICIO Y PRECIO ORIGINAL
+                          
                             if (reserva != null && servicio != null) {
 
                                 reserva.restaurarServicio(

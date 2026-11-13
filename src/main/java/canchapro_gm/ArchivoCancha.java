@@ -19,14 +19,13 @@ public class ArchivoCancha {
     public boolean guardarCanchas(Cancha[] listaCanchas,
             int cantidadCanchas) {
 
-        if (listaCanchas == null
-                || cantidadCanchas < 0
-                || cantidadCanchas > listaCanchas.length) {
+        if (listaCanchas == null|| cantidadCanchas < 0
+            || cantidadCanchas > listaCanchas.length) {
             return false;
         }
 
-        try (BufferedWriter bw =
-                new BufferedWriter(new FileWriter(archivo))) {
+        try (FileWriter fw = new FileWriter(archivo);
+             BufferedWriter bw = new BufferedWriter(fw)) {
 
             for (int i = 0; i < cantidadCanchas; i++) {
 
@@ -72,7 +71,8 @@ public class ArchivoCancha {
         Cancha[] canchasCargadas = new Cancha[100];
         int cantidad = 0;
 
-        try (BufferedReader br =new BufferedReader(new FileReader(archivo))) {
+        try (FileReader fr = new FileReader(archivo);
+         BufferedReader br = new BufferedReader(fr)) {
 
             String linea = br.readLine();
 
@@ -105,6 +105,8 @@ public class ArchivoCancha {
                             || nombre.isEmpty()
                             || tipo.isEmpty()
                             || capacidad <= 0
+                            || horaApertura.isBefore(LocalTime.of(8, 0))
+                            || horaCierre.isAfter(LocalTime.of(23, 0))
                             || !horaCierre.isAfter(horaApertura)) {
 
                         return null;

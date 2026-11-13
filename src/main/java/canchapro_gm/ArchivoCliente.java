@@ -12,11 +12,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class ArchivoCliente {
+    private String archivo="canchas.csv";
 
     public boolean guardarClientes(Cliente[] clientes) {
 
         try {
-            FileWriter fr = new FileWriter("clientes.csv");
+            FileWriter fr = new FileWriter(archivo);
             BufferedWriter bw = new BufferedWriter(fr);
 
             for (int i = 0; i < clientes.length; i++) {

@@ -19,6 +19,7 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     private GestorCanchas gestorCanchas;
     private GestorDisponibilidad gestorDisponibilidad;
     private Tarifa tarifa;
+    private ArchivoTarifa achivoTarifas;
     private GestorPago gestorPagos;
     private GestorServiciosAdicionales gestorServicios;
 
@@ -28,6 +29,7 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     public JFrameMenuPrincipal() {
 
     initComponents();
+    
     getContentPane().removeAll();
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(jpanleEncabezado, BorderLayout.NORTH);
@@ -74,6 +76,9 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
     //====================================================
 
     tarifa = new Tarifa();
+    ArchivoTarifa archivoTarifas = new ArchivoTarifa();
+
+    archivoTarifas.cargarTarifas(tarifa);
 
     //====================================================
     // 5. CREAR GESTOR DE RESERVAS
@@ -163,6 +168,8 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jItemGestionPagos = new javax.swing.JMenuItem();
         jmenuCanchas = new javax.swing.JMenu();
         jItemGestionCanchas = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jItemGestiondeTarifas = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jItemServicios = new javax.swing.JMenuItem();
         jmenuReportes = new javax.swing.JMenu();
@@ -257,7 +264,6 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
 
         jmenu_Clientes.setBackground(new java.awt.Color(129, 199, 132));
         jmenu_Clientes.setForeground(new java.awt.Color(255, 255, 255));
-        jmenu_Clientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cliente.png"))); // NOI18N
         jmenu_Clientes.setText("CLIENTES");
         jmenu_Clientes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenu_Clientes.setPreferredSize(new java.awt.Dimension(150, 50));
@@ -292,6 +298,15 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jmenuCanchas);
 
+        jMenu2.setText("TARIFA");
+        jMenu2.setPreferredSize(new java.awt.Dimension(150, 50));
+
+        jItemGestiondeTarifas.setText("Gestion de Tarifas");
+        jItemGestiondeTarifas.addActionListener(this::jItemGestiondeTarifasActionPerformed);
+        jMenu2.add(jItemGestiondeTarifas);
+
+        jMenuBar1.add(jMenu2);
+
         jMenu1.setText("SERVICIOS ADICIONALES");
 
         jItemServicios.setText("gestion servicios");
@@ -302,7 +317,6 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
 
         jmenuReportes.setBackground(new java.awt.Color(129, 199, 132));
         jmenuReportes.setForeground(new java.awt.Color(255, 255, 255));
-        jmenuReportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/reportes.png"))); // NOI18N
         jmenuReportes.setText("REPORTES");
         jmenuReportes.setAlignmentX(1.0F);
         jmenuReportes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -401,9 +415,20 @@ JInternalFrmDisponibilidad ventana =new JInternalFrmDisponibilidad(
         tarifa);
 
       jDesktopPane_menu.add(ventana);
-
-ventana.setVisible(true);       // TODO add your handling code here:
+      ventana.setVisible(true);
+      try {
+      ventana.setMaximum(true);
+     } catch (java.beans.PropertyVetoException e) {
+      System.out.println("No se pudo maximizar la ventana.");
+     }
+      // TODO add your handling code here:
     }//GEN-LAST:event_jitemNuevaReservaActionPerformed
+
+    private void jItemGestiondeTarifasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jItemGestiondeTarifasActionPerformed
+    JInternalFrmTarifa ventana = new JInternalFrmTarifa(tarifa);
+    jDesktopPane_menu.add(ventana);
+    ventana.setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_jItemGestiondeTarifasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -436,8 +461,10 @@ ventana.setVisible(true);       // TODO add your handling code here:
     private javax.swing.JMenuItem jItemGestionCanchas;
     private javax.swing.JMenuItem jItemGestionClientes;
     private javax.swing.JMenuItem jItemGestionPagos;
+    private javax.swing.JMenuItem jItemGestiondeTarifas;
     private javax.swing.JMenuItem jItemServicios;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;

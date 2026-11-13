@@ -56,9 +56,8 @@ public class GestorPago {
             return null;
         }
 
-        // Buscar reserva
-        Reserva reserva =
-                gestorReservas.buscarReserva(codigoReserva);
+ 
+        Reserva reserva =gestorReservas.buscarReserva(codigoReserva);
 
         if (reserva == null) {
             return null;
@@ -67,12 +66,10 @@ public class GestorPago {
           return null;
           }
 
-        // No permitir pagos en reservas canceladas
         if (reserva.getEstado() == EstadoReserva.CANCELADA) {
             return null;
         }
 
-        // Verificar saldo
         if (monto > reserva.calcularSaldo()) {
             return null;
         }
@@ -83,12 +80,10 @@ public class GestorPago {
             return null;
         }
 
-        // Registrar el importe en la reserva
         if (!reserva.registrarPago(monto)) {
             return null;
         }
 
-        // Crear el pago
         Pago pago = new Pago(
                 codigo,
                 codigoReserva,
@@ -161,7 +156,6 @@ public class GestorPago {
         return resultado;
     }
 
-    // Recuperar pagos guardados sin volver a cobrarlos
     public void establecerPagos(Pago[] pagosCargados) {
 
         cantidadPagos = 0;

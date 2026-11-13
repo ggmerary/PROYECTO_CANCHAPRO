@@ -180,7 +180,6 @@ public class GestorServiciosAdicionales {
                 }
 
             } catch (NumberFormatException e) {
-                // Ignorar códigos numéricos demasiado grandes
             }
         }
     }

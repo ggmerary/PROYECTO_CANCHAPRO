@@ -31,19 +31,46 @@ public class GestorCanchas {
 
         return codigo;
     }
+    private boolean validarHorario(LocalTime horaApertura,
+                               LocalTime horaCierre) {
+
+    if (horaApertura == null || horaCierre == null) {
+        return false;
+    }
+
+    LocalTime horaMinima = LocalTime.of(8, 0);
+    LocalTime horaMaxima = LocalTime.of(23, 0);
+
+    if (horaApertura.isBefore(horaMinima)) {
+        return false;
+    }
+
+    if (horaCierre.isAfter(horaMaxima)) {
+        return false;
+    }
+
+    if (!horaCierre.isAfter(horaApertura)) {
+        return false;
+    }
+     if (horaApertura.getMinute() != 0
+            || horaCierre.getMinute() != 0) {
+        return false;
+    }
+
+    return true;
+    }
+    
 
     public Cancha agregarCancha(String nombre, String tipo,
             int capacidad,LocalTime horaApertura, LocalTime horaCierre) {
 
         if (nombre == null || nombre.trim().isEmpty()
-                || tipo == null || tipo.trim().isEmpty()
-                || capacidad <= 0
-                || horaApertura == null
-                || horaCierre == null
-                || !horaCierre.isAfter(horaApertura)) {
+        || tipo == null || tipo.trim().isEmpty()
+        || capacidad <= 0
+        || !validarHorario(horaApertura, horaCierre)) {
 
-            return null;
-        }
+          return null;
+         }
 
         if (cantidadCanchas >= listaCanchas.length) {
             return null;
@@ -124,8 +151,7 @@ public class GestorCanchas {
             return false;
         }
 
-        if (horaApertura == null || horaCierre == null
-                || !horaCierre.isAfter(horaApertura)) {
+        if (!validarHorario(horaApertura, horaCierre)) {
             return false;
         }
 
@@ -154,7 +180,6 @@ public class GestorCanchas {
         return false;
     }
 
-    // Obtener canchas registradas
     public Cancha[] obtenerCanchas() {
 
         Cancha[] registradas = new Cancha[cantidadCanchas];

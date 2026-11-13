@@ -85,14 +85,35 @@ private GestorCanchas gestorCanchas;
                             gestorDisponibilidad.verificarDisponibilidad(
                                     cancha, fecha, inicio, fin);
 
-                    if (disponible) {
-                        fila[hora - 5] = "Libre";
-                    } else if (gestorDisponibilidad.existeConflicto(
-                            cancha, fecha, inicio, fin)) {
-                        fila[hora - 5] = "Ocupada";
-                    } else {
-                        fila[hora - 5] = "No disponible";
-                    }
+                   if (fecha.isBefore(LocalDate.now())
+                   || (fecha.equals(LocalDate.now())
+                  && inicio.isBefore(LocalTime.now()))) {
+
+                fila[hora - 5] = "Hora pasada";
+
+                 } else if (!cancha.getEstado().equalsIgnoreCase("Disponible")) {
+
+                fila[hora - 5] = cancha.getEstado();
+
+                 } else if (inicio.isBefore(cancha.getHoraApertura())
+                 || fin.isAfter(cancha.getHoraCierre())) {
+
+                fila[hora - 5] = "Cerrado";
+
+                } else if (gestorDisponibilidad.existeConflicto(
+                cancha, fecha, inicio, fin)) {
+
+                fila[hora - 5] = "Ocupada";
+
+               } else if (gestorDisponibilidad.verificarDisponibilidad(
+                cancha, fecha, inicio, fin)) {
+
+               fila[hora - 5] = "Libre";
+
+                } else {
+
+               fila[hora - 5] = "No disponible";
+               }
                 }
 
                 modelo.addRow(fila);
@@ -143,6 +164,9 @@ private GestorCanchas gestorCanchas;
         jScrollPane1.setViewportView(jTable1);
 
         setBackground(new java.awt.Color(241, 248, 233));
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
 
         jPanel1.setBackground(new java.awt.Color(241, 248, 233));
 
@@ -154,6 +178,7 @@ private GestorCanchas gestorCanchas;
         btnConsultar.addActionListener(this::btnConsultarActionPerformed);
 
         btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
 
         cmboxTipoCancha.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todas las canchas", "Fútbol 5", "Fútbol 7", "Fútbol 11" }));
 
@@ -264,6 +289,19 @@ private GestorCanchas gestorCanchas;
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
      mostrarDisponibilidad();        // TODO add your handling code here:
     }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+
+    selectorFecha.setDate(new java.util.Date());
+
+    cmboxTipoCancha.setSelectedItem("Todas las canchas");
+
+    DefaultTableModel modelo =(DefaultTableModel) tbDisponibilidad.getModel();
+
+    modelo.setRowCount(0);
+    modelo.setColumnCount(0);
+
+    }//GEN-LAST:event_btnLimpiarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

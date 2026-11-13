@@ -5,6 +5,7 @@
 package canchapro_gm;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class GestorReservas {
@@ -61,6 +62,9 @@ public class GestorReservas {
                 || tarifa == null) {
 
             return null;
+        }
+        if (!validarFechaHoraReserva(fecha, horaInicio)) {
+        return null;
         }
 
         if (cantidadReservas >= listaReservas.length) {
@@ -230,9 +234,8 @@ public class GestorReservas {
         return false;
     }
 
-    // Guardar los servicios adicionales de las reservas
-    boolean guardadoServicios =
-            archivoServicios.guardarServiciosReservas(reservas);
+   
+    boolean guardadoServicios =archivoServicios.guardarServiciosReservas(reservas);
 
     return guardadoServicios;
     }
@@ -314,4 +317,38 @@ public class GestorReservas {
     // Actualizar el arreglo del gestor
     establecerReservas(reservasCargadas);
     }
+    public LocalTime calcularHoraFin(
+        LocalTime horaInicio, int duracionHoras) {
+
+    if (horaInicio == null || duracionHoras <= 0) {
+        return null;
+    }
+
+    long segundosFin = horaInicio.toSecondOfDay()
+            + duracionHoras * 3600L;
+
+    if (segundosFin >= 86400) {
+        return null;
+    }
+
+    return horaInicio.plusHours(duracionHoras);
+}
+   public boolean validarFechaHoraReserva(
+        LocalDate fecha, LocalTime horaInicio) {
+
+    if (fecha == null || horaInicio == null) {
+        return false;
+    }
+
+    LocalDateTime fechaHoraReserva = LocalDateTime.of(fecha, horaInicio);
+
+    LocalDateTime fechaHoraActual =
+            LocalDateTime.now();
+
+    if (!fechaHoraReserva.isAfter(fechaHoraActual)) {
+        return false;
+    }
+
+    return true;
+}
 }
