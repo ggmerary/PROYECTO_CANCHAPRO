@@ -14,9 +14,9 @@ import javax.swing.JOptionPane;
  
 
 public class JFrameMenuPrincipal extends javax.swing.JFrame {
+    private GestorReservas gestorReservas;
     private GestorClientes gestorClientes;
     private GestorCanchas gestorCanchas;
-    private GestorReservas gestorReservas;
     private GestorDisponibilidad gestorDisponibilidad;
     private Tarifa tarifa;
     private GestorPago gestorPagos;
@@ -24,39 +24,99 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameMenuPrincipal.class.getName());
 
-    /**
-     * Creates new form JFrameMenu
-     */
+    
     public JFrameMenuPrincipal() {
-        initComponents();
-        getContentPane().removeAll();
 
+    initComponents();
+    getContentPane().removeAll();
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(jpanleEncabezado, BorderLayout.NORTH);
     getContentPane().add(jDesktopPane_menu, BorderLayout.CENTER);
-        
-     //==============================================================
-    gestorClientes =new GestorClientes(100);
-    ArchivoCliente archivo=new ArchivoCliente();
-    Cliente[]clientesCargados=archivo.cargarClientes(100);
+
+    //====================================================
+    // 1. CARGAR CLIENTES
+    //====================================================
+
+    gestorClientes = new GestorClientes(100);
+
+    ArchivoCliente archivo = new ArchivoCliente();
+
+    Cliente[] clientesCargados =archivo.cargarClientes(100);
+
     gestorClientes.establecerClientes(clientesCargados);
-    //==============================================================
+
+    //====================================================
+    // 2. CARGAR CANCHAS
+    //====================================================
+
     gestorCanchas = new GestorCanchas();
 
-     if (!gestorCanchas.cargarDatos()) {
+    if (!gestorCanchas.cargarDatos()) {
 
-    JOptionPane.showMessageDialog(this,
-            "No se pudieron cargar las canchas.");
+        JOptionPane.showMessageDialog(this,
+                "No se pudieron cargar las canchas.");
     }
-     //===========================================================
-     tarifa=new Tarifa();
-    gestorReservas=new GestorReservas(200, tarifa);
-    ArchivoReserva archivoReserva=new ArchivoReserva();
-    Reserva[] reservasCargadas=archivoReserva.cargarReservas(200);
-    gestorReservas.establecerReservas(reservasCargadas);
-    gestorDisponibilidad=new GestorDisponibilidad(gestorReservas, gestorCanchas);
 
-    //=======================================
+    //====================================================
+    // 3. CARGAR SERVICIOS ADICIONALES
+    //====================================================
+
+    gestorServicios = new GestorServiciosAdicionales(100);
+
+    ArchivoServicio archivoServicio = new ArchivoServicio();
+
+    ServicioAdicional[] serviciosCargados =archivoServicio.cargarServicios(100);
+
+    gestorServicios.establecerServicios(serviciosCargados);
+
+    //====================================================
+    // 4. CREAR TARIFA
+    //====================================================
+
+    tarifa = new Tarifa();
+
+    //====================================================
+    // 5. CREAR GESTOR DE RESERVAS
+    //====================================================
+
+    gestorReservas = new GestorReservas( 200, tarifa, gestorServicios);
+
+    //====================================================
+    // 6. CARGAR RESERVAS
+    //====================================================
+
+    ArchivoReserva archivoReserva = new ArchivoReserva();
+
+    Reserva[] reservasCargadas =archivoReserva.cargarReservas(200);
+
+    //====================================================
+    // 7. CARGAR SERVICIOS DE LAS RESERVAS
+    //====================================================
+
+    ArchivoReservaServicios archivoReservaServicios =
+            new ArchivoReservaServicios();
+
+    archivoReservaServicios.cargarServiciosReservas(
+            reservasCargadas,
+            gestorServicios
+    );
+
+    //====================================================
+    // 8. ESTABLECER RESERVAS EN EL GESTOR
+    //====================================================
+
+    gestorReservas.establecerReservas(reservasCargadas);
+
+    //====================================================
+    // 9. CREAR GESTOR DE DISPONIBILIDAD
+    //====================================================
+
+    gestorDisponibilidad = new GestorDisponibilidad( gestorReservas, gestorCanchas
+    );
+
+    //====================================================
+    // 10. CARGAR PAGOS
+    //====================================================
 
     gestorPagos = new GestorPago(200, gestorReservas);
 
@@ -64,24 +124,17 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
 
     Pago[] pagosCargados = archivoPago.cargarPagos(200);
 
-    gestorPagos.establecerPagos(pagosCargados);    
-//============================================
-    gestorServicios = new GestorServiciosAdicionales(100);
+    gestorPagos.establecerPagos(pagosCargados);
 
-    ArchivoServicio archivoServicio = new ArchivoServicio();
+    //====================================================
+    // 11. CONFIGURACION DE LA VENTANA PRINCIPAL
+    //====================================================
 
-    ServicioAdicional[] serviciosCargados =
-        archivoServicio.cargarServicios(100);
-
-   gestorServicios.establecerServicios(serviciosCargados);
-   //=======================================================
-   this.setSize(new Dimension(1200, 700));
-   this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-   this.setLocationRelativeTo(null);
-   this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
-
-   
-    }
+    this.setSize(new Dimension(1200, 700));
+    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    this.setLocationRelativeTo(null);
+    this.setTitle("CANCHAPRO - Complejo Deportivo La 10");
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -101,7 +154,7 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jmenuInicio = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jmenuReservas = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        jitemNuevaReserva = new javax.swing.JMenuItem();
         jmenuDisponibilidad = new javax.swing.JMenu();
         jItemDisponibilidad = new javax.swing.JMenuItem();
         jmenu_Clientes = new javax.swing.JMenu();
@@ -184,8 +237,9 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jmenuReservas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenuReservas.setPreferredSize(new java.awt.Dimension(150, 50));
 
-        jMenuItem2.setText("Nueva reserva");
-        jmenuReservas.add(jMenuItem2);
+        jitemNuevaReserva.setText("Nueva reserva");
+        jitemNuevaReserva.addActionListener(this::jitemNuevaReservaActionPerformed);
+        jmenuReservas.add(jitemNuevaReserva);
 
         jMenuBar1.add(jmenuReservas);
 
@@ -336,6 +390,21 @@ JInternalFrmDisponibilidad ventana =new JInternalFrmDisponibilidad(
         ventana.setVisible(true);
     }//GEN-LAST:event_jItemServiciosActionPerformed
 
+    private void jitemNuevaReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jitemNuevaReservaActionPerformed
+     JInternalFrmReservas ventana= new JInternalFrmReservas(
+        gestorReservas,
+        gestorClientes,
+        gestorCanchas,
+        gestorServicios,
+        gestorDisponibilidad,
+        gestorPagos,
+        tarifa);
+
+      jDesktopPane_menu.add(ventana);
+
+ventana.setVisible(true);       // TODO add your handling code here:
+    }//GEN-LAST:event_jitemNuevaReservaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -371,10 +440,10 @@ JInternalFrmDisponibilidad ventana =new JInternalFrmDisponibilidad(
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JLabel jblEncabezado;
     private javax.swing.JLabel jblEncabezado1;
+    private javax.swing.JMenuItem jitemNuevaReserva;
     private javax.swing.JMenu jmenuCanchas;
     private javax.swing.JMenu jmenuConfiguracion;
     private javax.swing.JMenu jmenuDisponibilidad;

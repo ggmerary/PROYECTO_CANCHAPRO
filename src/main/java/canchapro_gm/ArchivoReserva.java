@@ -12,14 +12,18 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-
 public class ArchivoReserva {
-     private String archivo = "reservas.csv";
 
+    private String archivo = "reservas.csv";
+
+  
     public boolean guardarReservas(Reserva[] reservas) {
 
-        try (BufferedWriter bw =
-                new BufferedWriter(new FileWriter(archivo))) {
+        if (reservas == null) {
+            return false;
+        }
+
+        try (BufferedWriter bw =new BufferedWriter(new FileWriter(archivo))) {
 
             for (int i = 0; i < reservas.length; i++) {
 
@@ -30,7 +34,8 @@ public class ArchivoReserva {
                     String fechaCancelacion = "";
 
                     if (reserva.getFechaCancelacion() != null) {
-                        fechaCancelacion =reserva.getFechaCancelacion().toString();
+                        fechaCancelacion =
+                                reserva.getFechaCancelacion().toString();
                     }
 
                     bw.write(
@@ -39,7 +44,7 @@ public class ArchivoReserva {
                             reserva.getCodigoCancha() + ";" +
                             reserva.getFecha() + ";" +
                             reserva.getHoraInicio() + ";" +
-                            reserva.getDuracionMinutos() + ";" +
+                            reserva.getDuracionHoras() + ";" +
                             reserva.getTotal() + ";" +
                             reserva.getTotalPagado() + ";" +
                             reserva.getEstado() + ";" +
@@ -55,95 +60,126 @@ public class ArchivoReserva {
             return true;
 
         } catch (IOException e) {
-            System.out.println("Error al guardar reservas: "
-                    + e.getMessage());
+
+            System.out.println(
+                    "Error al guardar reservas: "
+                    + e.getMessage()
+            );
+
             return false;
         }
     }
+
     public Reserva[] cargarReservas(int capacidad) {
 
-    Reserva[] reservas = new Reserva[capacidad];
-    int cantidad = 0;
+        Reserva[] reservas = new Reserva[capacidad];
 
-    try (BufferedReader br =
-            new BufferedReader(new FileReader(archivo))) {
+        int cantidad = 0;
 
-        String linea = br.readLine();
+        try (BufferedReader br =
+                new BufferedReader(new FileReader(archivo))) {
 
-        while (linea != null && cantidad < capacidad) {
+            String linea = br.readLine();
 
-            if (!linea.trim().isEmpty()) {
+            while (linea != null && cantidad < capacidad) {
 
-                String[] datos = linea.split(";", -1);
+                if (!linea.trim().isEmpty()) {
 
-                if (datos.length == 12) {
+                    String[] datos = linea.split(";", -1);
 
-                    try {
-                        String codigo = datos[0];
-                        String codigoCliente = datos[1];
-                        String codigoCancha = datos[2];
+                    if (datos.length == 12) {
 
-                        LocalDate fecha = LocalDate.parse(datos[3]);
-                        LocalTime horaInicio = LocalTime.parse(datos[4]);
+                        try {
 
-                        int duracion = Integer.parseInt(datos[5]);
-                        double total = Double.parseDouble(datos[6]);
-                        double totalPagado = Double.parseDouble(datos[7]);
+                            String codigo = datos[0];
+                            String codigoCliente = datos[1];
+                            String codigoCancha = datos[2];
 
-                        EstadoReserva estado =
-                                EstadoReserva.valueOf(datos[8]);
+                            LocalDate fecha =
+                                    LocalDate.parse(datos[3]);
 
-                        LocalDate fechaCancelacion = null;
+                            LocalTime horaInicio =
+                                    LocalTime.parse(datos[4]);
 
-                        if (!datos[9].isEmpty()) {
-                            fechaCancelacion =
-                                    LocalDate.parse(datos[9]);
-                        }
+                            // DURACION EN HORAS
+                            int duracionHoras =
+                                    Integer.parseInt(datos[5]);
 
-                        String motivo = datos[10];
-                        String usuario = datos[11];
+                            double total =
+                                    Double.parseDouble(datos[6]);
 
-                        if (duracion > 0 && total >= 0
-                                && totalPagado >= 0
-                                && totalPagado <= total) {
+                            double totalPagado =
+                                    Double.parseDouble(datos[7]);
 
-                            Reserva reserva = new Reserva(
-                                    codigo,
-                                    codigoCliente,
-                                    codigoCancha,
-                                    fecha,
-                                    horaInicio,
-                                    duracion,
-                                    total
+                            EstadoReserva estado =
+                                    EstadoReserva.valueOf(datos[8]);
+
+                            LocalDate fechaCancelacion = null;
+
+                            if (!datos[9].isEmpty()) {
+
+                                fechaCancelacion =
+                                        LocalDate.parse(datos[9]);
+                            }
+
+                            String motivo = datos[10];
+                            String usuario = datos[11];
+
+                            // VALIDAR DATOS
+                            if (duracionHoras > 0
+                                    && Double.isFinite(total)
+                                    && Double.isFinite(totalPagado)
+                                    && total >= 0
+                                    && totalPagado >= 0
+                                    && totalPagado <= total
+                                    && horaInicio.toSecondOfDay()
+                                    + duracionHoras * 3600L < 86400) {
+
+                                Reserva reserva = new Reserva(
+                                        codigo,
+                                        codigoCliente,
+                                        codigoCancha,
+                                        fecha,
+                                        horaInicio,
+                                        duracionHoras,
+                                        total
+                                );
+
+                                // RECUPERAR ESTADO Y PAGOS
+                                reserva.restaurarDatos(
+                                        totalPagado,
+                                        estado,
+                                        fechaCancelacion,
+                                        motivo,
+                                        usuario
+                                );
+
+                                reservas[cantidad] = reserva;
+
+                                cantidad++;
+                            }
+
+                        } catch (RuntimeException e) {
+
+                            System.out.println(
+                                    "Reserva invalida: "
+                                    + e.getMessage()
                             );
-
-                            reserva.restaurarDatos(
-                                    totalPagado,
-                                    estado,
-                                    fechaCancelacion,
-                                    motivo,
-                                    usuario
-                            );
-
-                            reservas[cantidad] = reserva;
-                            cantidad++;
                         }
-
-                    } catch (RuntimeException e) {
-                        System.out.println(
-                                "Reserva inválida: " + e.getMessage());
                     }
                 }
+
+                linea = br.readLine();
             }
 
-            linea = br.readLine();
+        } catch (IOException e) {
+
+            System.out.println(
+                    "Error al cargar reservas: "
+                    + e.getMessage()
+            );
         }
 
-    } catch (IOException e) {
-        System.out.println("Error al cargar reservas: "
-                + e.getMessage());
+        return reservas;
     }
-
-    return reservas;
-}
 }

@@ -54,10 +54,13 @@
             </Property>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
+            <MenuItem class="javax.swing.JMenuItem" name="jitemNuevaReserva">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Nueva reserva"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jitemNuevaReservaActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

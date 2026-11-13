@@ -7,16 +7,14 @@ package canchapro_gm;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author genesis
- */
+
 public class JInternalFrmServiciosAdicionales extends javax.swing.JInternalFrame {
 private GestorServiciosAdicionales gestorServicios;
 private boolean cambiosPendientes = false;
 
     public JInternalFrmServiciosAdicionales(GestorServiciosAdicionales gestorServicios) {
         initComponents();
+        cmboxEstado.setEnabled(false);
         this.gestorServicios=gestorServicios;
         txtCodigo.setEditable(false);
         mostrarServicios();

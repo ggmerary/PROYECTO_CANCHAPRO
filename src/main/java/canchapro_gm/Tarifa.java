@@ -7,10 +7,7 @@ package canchapro_gm;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- *
- * @author genesis
- */
+
 public class Tarifa {
     
 
@@ -24,8 +21,7 @@ public class Tarifa {
         precioFinSemana = 250;
     }
 
-    public double obtenerPrecioHora(LocalDate fecha,
-                                   LocalTime horaInicio) {
+    public double obtenerPrecioHora(LocalDate fecha, LocalTime horaInicio) {
 
         if (fecha == null || horaInicio == null) {
             return -1;
@@ -46,19 +42,16 @@ public class Tarifa {
 
     // Método 2: Calcular el total
 public double calcularTotal(LocalDate fecha,
-                           LocalTime horaInicio,
-                           int duracionMinutos) {
+                            LocalTime horaInicio,
+                            int duracionHoras) {
 
-    if (fecha == null || horaInicio == null
-            || duracionMinutos <= 0) {
+    if (fecha == null || horaInicio == null|| duracionHoras <= 0) {
         return -1;
     }
 
     double precioHora = obtenerPrecioHora(fecha, horaInicio);
 
-    double horas = duracionMinutos / 60.0;
-
-    double total = precioHora * horas;
+    double total = precioHora * duracionHoras;
 
     return Math.round(total * 100.0) / 100.0;
 }
