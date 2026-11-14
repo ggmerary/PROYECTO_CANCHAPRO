@@ -577,6 +577,127 @@ private void calcularSaldoPendiente() {
 
     lblSaldoPendiente.setText(
             String.format("Q %.2f", saldo));
+}private void registrarReserva() {
+
+    if (cmboxCliente.getSelectedItem() == null) {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione un cliente.");
+        return;
+    }
+
+    if (cmboxCanchaDisponible.getSelectedItem() == null) {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione una cancha disponible.");
+        return;
+    }
+
+    LocalDate fecha = obtenerFechaReserva();
+
+    if (fecha == null) {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione una fecha válida.");
+        return;
+    }
+
+    if (cmboxHoraInicio.getSelectedItem() == null) {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione una hora de inicio.");
+        return;
+    }
+
+    if (cmboxDuracionHoras.getSelectedIndex() == -1) {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione la duración de la reserva.");
+        return;
+    }
+      String codigoCliente = cmboxCliente.getSelectedItem().toString().split(" - ")[0];
+
+      String codigoCancha = cmboxCanchaDisponible.getSelectedItem().toString().split(" - ")[0];
+
+      LocalTime horaInicio = LocalTime.parse(
+        cmboxHoraInicio.getSelectedItem().toString());
+
+     int duracionHoras = cmboxDuracionHoras.getSelectedIndex() + 1;
+     ServicioAdicional[] serviciosSeleccionados =
+     obtenerServiciosSeleccionados();
+     double anticipo;
+
+    try { anticipo = Double.parseDouble(txtAnticipo.getText().trim());
+
+    } catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(this,
+            "Ingrese un anticipo válido.");
+    return;
+}
+
+    calcularTotalGeneral();
+    double totalReserva = Double.parseDouble(
+    jlbTotalReserva.getText().replace("Q", "").trim());
+    double anticipoMinimo = totalReserva * 0.30;
+
+    if (!Double.isFinite(totalReserva) || totalReserva <= 0) {
+    JOptionPane.showMessageDialog(this,
+            "El total de la reserva no es válido.");
+    return;
+}
+
+     if (!Double.isFinite(anticipo)
+        || anticipo < anticipoMinimo
+        || anticipo > totalReserva) {
+
+    JOptionPane.showMessageDialog(this,
+            "El anticipo debe ser como mínimo el 30%.\n"
+            + "Anticipo mínimo: Q " + anticipoMinimo);
+    return;
+}     MetodoPago metodoPago = obtenerMetodoPago();
+
+     if (metodoPago == null) { JOptionPane.showMessageDialog(this,
+      "Seleccione un método de pago.");
+    return;
+    }
+       Reserva reserva = gestorReservas.agregarReserva(
+        codigoCliente,
+        codigoCancha,
+        fecha,
+        horaInicio,
+        duracionHoras,
+        gestorDisponibilidad,
+        gestorClientes,
+        gestorCanchas,
+        serviciosSeleccionados
+);
+
+// VERIFICAR SI SE REGISTRÓ CORRECTAMENTE
+if (reserva == null) {
+    JOptionPane.showMessageDialog(this,
+            "No se pudo registrar la reserva.\n"
+            + "Verifique los datos y la disponibilidad.");
+    return; 
+    
+}   Pago pago = gestorPagos.registrarPago(
+     reserva.getCodigo(),
+     anticipo,
+     metodoPago,
+    "Anticipo inicial de reserva"
+);
+
+
+if (pago == null) {
+    JOptionPane.showMessageDialog(this,
+            "No se pudo registrar el anticipo.\n"
+            + "La reserva quedó en memoria sin pago.\n"
+            + "No guarde los cambios todavía.");
+    return;
+}
+        JOptionPane.showMessageDialog(this,
+        "Reserva registrada correctamente.\n\n"
+        + "Código de reserva: " + reserva.getCodigo()
+        + "\nTotal de reserva: Q " + reserva.getTotal()
+        + "\nAnticipo pagado: Q " + reserva.getTotalPagado()
+        + "\nSaldo pendiente: Q " + reserva.calcularSaldo()
+        + "\nEstado: " + reserva.getEstado()
+        + "\n\nRecuerde presionar Guardar Cambios.");
+
 }
     
     @SuppressWarnings("unchecked")
@@ -974,6 +1095,7 @@ private void calcularSaldoPendiente() {
         );
 
         jButton4.setText("REGISTRAR RESERVA");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
 
         jButton5.setText("Limpiar");
 
@@ -994,25 +1116,25 @@ private void calcularSaldoPendiente() {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(txtAnticipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(cmboxMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                         .addComponent(jLabel20)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel21)
                         .addGap(33, 33, 33))
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
+                        .addGap(39, 39, 39)
                         .addComponent(jLabel14)
-                        .addGap(33, 33, 33)
+                        .addGap(30, 30, 30)
                         .addComponent(lblSaldoPendiente, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel23)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 62, Short.MAX_VALUE))))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(txtAnticipo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmboxMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1028,14 +1150,19 @@ private void calcularSaldoPendiente() {
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtAnticipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cmboxMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(79, 79, 79)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel23))))
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGap(79, 79, 79)
+                                .addComponent(jLabel23))
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGap(72, 72, 72)
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(7, 7, 7)))
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
         jButton1.setText("GUADAR CAMBIOS");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -1056,7 +1183,7 @@ private void calcularSaldoPendiente() {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(910, Short.MAX_VALUE))
+                .addContainerGap(868, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jButton4)
@@ -1216,6 +1343,29 @@ private void calcularSaldoPendiente() {
     private void txtAnticipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAnticipoActionPerformed
     calcularSaldoPendiente();        // TODO add your handling code here:
     }//GEN-LAST:event_txtAnticipoActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        registrarReserva();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+boolean reservasGuardadas = gestorReservas.guardarReservas();
+
+
+boolean pagosGuardados = gestorPagos.guardarPagos();
+
+if (reservasGuardadas && pagosGuardados) {
+
+    JOptionPane.showMessageDialog(this,
+            "Reservas y pagos guardados correctamente.");
+
+} else {
+
+    JOptionPane.showMessageDialog(this,
+            "Ocurrió un error al guardar los cambios.\n"
+            + "Verifique los archivos CSV.");
+}    
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

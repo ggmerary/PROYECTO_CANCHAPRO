@@ -10,7 +10,6 @@ import java.time.LocalTime;
 
 public class Reserva {
 
-    // DATOS GENERALES
     private String codigo;
     private String codigoCliente;
     private String codigoCancha;
@@ -51,13 +50,11 @@ public class Reserva {
         this.motivoCancelacion = "";
         this.usuarioResponsable = "";
 
-        // Arreglos para los servicios adicionales
         servicios = new ServicioAdicional[10];
         preciosAplicados = new double[10];
         cantidadServicios = 0;
     }
 
-    // RESTAURAR DATOS DESDE CSV
     public void restaurarDatos(double totalPagado,
             EstadoReserva estado,
             LocalDate fechaCancelacion,
@@ -146,7 +143,7 @@ public class Reserva {
         return false;
     }
 
-    // CANCELAR RESERVA
+ 
     public boolean cancelar(String motivo, String usuario) {
 
         if (estado == EstadoReserva.CANCELADA
@@ -192,7 +189,6 @@ public class Reserva {
         return true;
     }
 
-    // AGREGAR SERVICIO ADICIONAL
     public boolean agregarServicio(ServicioAdicional servicio) {
 
         if (servicio == null) {
@@ -294,7 +290,6 @@ public class Reserva {
         return true;
     }
 
-    // CALCULAR TOTAL DE SERVICIOS
     public double calcularTotalServicios() {
 
         double totalServicios = 0;

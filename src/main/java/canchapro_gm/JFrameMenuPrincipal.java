@@ -292,6 +292,7 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
         jmenuCanchas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jmenuCanchas.setPreferredSize(new java.awt.Dimension(150, 50));
 
+        jItemGestionCanchas.setBackground(new java.awt.Color(0, 0, 0));
         jItemGestionCanchas.setText("Gestion de Canchas");
         jItemGestionCanchas.addActionListener(this::jItemGestionCanchasActionPerformed);
         jmenuCanchas.add(jItemGestionCanchas);
@@ -307,6 +308,7 @@ public class JFrameMenuPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
+        jMenu1.setForeground(new java.awt.Color(255, 255, 255));
         jMenu1.setText("SERVICIOS ADICIONALES");
 
         jItemServicios.setText("gestion servicios");
