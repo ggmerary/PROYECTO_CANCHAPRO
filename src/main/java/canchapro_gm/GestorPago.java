@@ -66,10 +66,6 @@ public class GestorPago {
           return null;
           }
 
-        if (reserva.getEstado() == EstadoReserva.CANCELADA) {
-            return null;
-        }
-
         if (monto > reserva.calcularSaldo()) {
             return null;
         }

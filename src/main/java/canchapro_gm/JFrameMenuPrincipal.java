@@ -413,6 +413,7 @@ JInternalFrmDisponibilidad ventana =new JInternalFrmDisponibilidad(
         gestorDisponibilidad,
         gestorPagos,
         tarifa);
+     ventana.actualizarServicios();
 
       jDesktopPane_menu.add(ventana);
       ventana.setVisible(true);

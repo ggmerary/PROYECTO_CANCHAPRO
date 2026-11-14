@@ -7,6 +7,7 @@ package canchapro_gm;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 
 public class JInternalFrmReservas extends javax.swing.JInternalFrame {
@@ -29,10 +30,10 @@ public JInternalFrmReservas(GestorReservas gestorReservas,
      
         initComponents();
         txtPrecioHora.setEditable(false);
-        txtPrecioTotal.setEditable(false);
+        txtPrecioTotalCancha.setEditable(false);
 
         txtPrecioHora.setText("");
-        txtPrecioTotal.setText("");
+        txtPrecioTotalCancha.setText("");
         this.gestorReservas = gestorReservas;
         this.gestorClientes = gestorClientes;
         this.gestorCanchas = gestorCanchas;
@@ -48,17 +49,179 @@ public JInternalFrmReservas(GestorReservas gestorReservas,
 
         cargarHoras();
         cargarDuraciones();
+        cargarServicios();
 
         dateFechaReserva.setMinSelectableDate(new java.util.Date());
         dateFechaReserva.setDate(new java.util.Date());
 
-    actualizarHoraFinalizacion();
+        actualizarHoraFinalizacion();
+        calcularTotalServicios();
+        calcularTotalGeneral();
 }
+private void cargarServicios() {
+
+    cmboxServicio.removeAllItems();
+
+    ServicioAdicional[] servicios =
+            gestorServicios.obtenerServicios();
+
+    for (int i = 0; i < servicios.length; i++) {
+
+        ServicioAdicional servicio = servicios[i];
+
+        if (servicio != null && servicio.estaActivo()) {
+
+            cmboxServicio.addItem(
+                    servicio.getCodigo() + " - "
+                    + servicio.getNombre()
+            );
+        }
+    }
+
+    cmboxServicio.setSelectedIndex(-1);
+}
+public void actualizarServicios() {
+    cargarServicios();
+}
+private void agregarServicioTabla() {
+
+    if (cmboxServicio.getSelectedItem() == null) {
+        JOptionPane.showMessageDialog(this,
+                "Seleccione un servicio.");
+        return;
+    }
+
+    String seleccionado = cmboxServicio.getSelectedItem().toString();
+
+    String codigo = seleccionado.split(" - ")[0];
+
+    ServicioAdicional servicio =
+            gestorServicios.buscarServicio(codigo);
+
+    if (servicio == null || !servicio.estaActivo()) {
+        JOptionPane.showMessageDialog(this,
+                "Servicio no disponible.");
+        return;
+    }
+
+    DefaultTableModel modelo =
+            (DefaultTableModel) tbServiciosReserva.getModel();
+
+    for (int i = 0; i < modelo.getRowCount(); i++) {
+
+        String codigoTabla = modelo.getValueAt(i, 0).toString();
+
+        if (codigoTabla.equals(servicio.getCodigo())) {
+            JOptionPane.showMessageDialog(this,
+                    "Este servicio ya fue agregado.");
+            return;
+        }
+    }
+
+    modelo.addRow(new Object[]{
+        servicio.getCodigo(),
+        servicio.getNombre(),
+        servicio.getPrecio()
+    });
+
+    calcularTotalServicios();
+    calcularTotalGeneral();
+    cmboxServicio.setSelectedIndex(-1);
+}
+private void quitarServicioTabla() {
+
+    int fila = tbServiciosReserva.getSelectedRow();
+
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(this, "Seleccione un servicio de la tabla.");
+        return;
+    }
+
+    int respuesta = JOptionPane.showConfirmDialog(
+            this,
+            "¿Desea quitar el servicio seleccionado?",
+            "Confirmar",
+            JOptionPane.YES_NO_OPTION
+    );
+
+    if (respuesta == JOptionPane.YES_OPTION) {
+
+        DefaultTableModel modelo =
+                (DefaultTableModel) tbServiciosReserva.getModel();
+
+        modelo.removeRow(fila);
+
+    calcularTotalServicios();
+    calcularTotalGeneral();
+    }
+}
+private void calcularTotalServicios() {
+
+    DefaultTableModel modelo =(DefaultTableModel) tbServiciosReserva.getModel();
+    double total = 0;
+    for (int i = 0; i < modelo.getRowCount(); i++) {
+        double precio = Double.parseDouble(
+         modelo.getValueAt(i, 2).toString());
+        total += precio;
+    }
+
+    txtTotalServicios.setText("Q " + total);
+}
+private void calcularTotalGeneral() {
+
+    if (cmboxCanchaDisponible.getSelectedItem() == null
+            || txtPrecioTotalCancha.getText().trim().isEmpty()) {
+
+        totalServiciosAdicionales.setText("Q 0.00");
+        jblPrecioTotalCancha.setText("Q 0.00");
+        jlbTotalReserva.setText("Q 0.00");
+
+        calcularSaldoPendiente();
+
+        return;
+    }
+
+    String textoCancha = txtPrecioTotalCancha.getText()
+            .replace("Q", "").trim();
+
+    double totalCancha = Double.parseDouble(textoCancha);
+
+ 
+    DefaultTableModel modelo =
+            (DefaultTableModel) tbServiciosReserva.getModel();
+
+    double totalServicios = 0;
+
+    for (int i = 0; i < modelo.getRowCount(); i++) {
+
+        double precio = Double.parseDouble(
+                modelo.getValueAt(i, 2).toString()
+        );
+
+        totalServicios += precio;
+    }
+
+   
+    double totalGeneral = totalCancha + totalServicios;
+
+    totalServiciosAdicionales.setText(
+            String.format("Q %.2f", totalServicios));
+
+    jblPrecioTotalCancha.setText(
+            String.format("Q %.2f", totalCancha));
+
+    jlbTotalReserva.setText(
+            String.format("Q %.2f", totalGeneral));
+
+    calcularSaldoPendiente(); 
+}
+
  private void limpiarCanchasConsultadas() {
 
     cmboxCanchaDisponible.removeAllItems();
     txtPrecioHora.setText("");
-    txtPrecioTotal.setText("");
+    txtPrecioTotalCancha.setText("");
+    calcularTotalGeneral();
 
 }
  private void buscarClientes() {
@@ -76,9 +239,9 @@ public JInternalFrmReservas(GestorReservas gestorReservas,
 
     for (int i = 0; i < clientes.length; i++) {
 
-        Cliente cliente = clientes[i];
+     Cliente cliente = clientes[i];
 
-        if (cliente != null && cliente.estaActivo()) {
+     if (cliente != null && cliente.estaActivo()) {
 
             String codigo = cliente.getCodigo();
             String nombre = cliente.getNombre();
@@ -278,13 +441,14 @@ private void consultarCanchasDisponibles() {
 private void calcularPrecioReserva() {
 
     if (dateFechaReserva.getDate() == null
-        || cmboxHoraInicio.getSelectedItem() == null
-        || cmboxDuracionHoras.getSelectedItem() == null
-        || cmboxCanchaDisponible.getSelectedItem() == null) {
+            || cmboxHoraInicio.getSelectedItem() == null
+            || cmboxDuracionHoras.getSelectedItem() == null
+            || cmboxCanchaDisponible.getSelectedItem() == null) {
 
         txtPrecioHora.setText("");
-        txtPrecioTotal.setText("");
-    return;
+        txtPrecioTotalCancha.setText("");
+        calcularTotalGeneral();
+        return;
     }
 
     LocalDate fecha = dateFechaReserva.getDate()
@@ -292,15 +456,18 @@ private void calcularPrecioReserva() {
             .atZone(java.time.ZoneId.systemDefault())
             .toLocalDate();
 
-    LocalTime horaInicio = LocalTime.parse(cmboxHoraInicio.getSelectedItem().toString());
+    LocalTime horaInicio = LocalTime.parse(
+            cmboxHoraInicio.getSelectedItem().toString());
 
     int duracionHoras = cmboxDuracionHoras.getSelectedIndex() + 1;
 
-    if (!gestorReservas.validarFechaHoraReserva(fecha, horaInicio) || gestorReservas.calcularHoraFin(
-        horaInicio, duracionHoras) == null) {
+    if (!gestorReservas.validarFechaHoraReserva(fecha, horaInicio)
+            || gestorReservas.calcularHoraFin(
+                    horaInicio, duracionHoras) == null) {
 
         txtPrecioHora.setText("");
-        txtPrecioTotal.setText("");
+        txtPrecioTotalCancha.setText("");
+        calcularTotalGeneral();
         return;
     }
 
@@ -311,15 +478,106 @@ private void calcularPrecioReserva() {
             fecha, horaInicio, duracionHoras);
 
     if (precioHora < 0 || precioTotal < 0) {
+
         txtPrecioHora.setText("");
-        txtPrecioTotal.setText("");
+        txtPrecioTotalCancha.setText("");
+        calcularTotalGeneral();
         return;
     }
 
     txtPrecioHora.setText("Q " + precioHora);
-    txtPrecioTotal.setText("Q " + precioTotal);
-}
+    txtPrecioTotalCancha.setText("Q " + precioTotal);
 
+    // Actualizar el total general
+    calcularTotalGeneral();
+}
+private double obtenerAnticipo() {
+
+    String texto = txtAnticipo.getText().trim();
+
+    if (texto.isEmpty()) {
+        return 0;
+    }
+
+    try {
+        return Double.parseDouble(texto);
+    } catch (NumberFormatException e) {
+        return -1;
+    }
+}
+private MetodoPago obtenerMetodoPago() {
+
+    int opcion = cmboxMetodoPago.getSelectedIndex();
+
+    if (opcion == 0) {
+        return MetodoPago.EFECTIVO;
+    } else if (opcion == 1) {
+        return MetodoPago.TRANSFERENCIA;
+    } else if (opcion == 2) {
+        return MetodoPago.TARJETA_DEBITO;
+    } else if (opcion == 3) {
+        return MetodoPago.TARJETA_CREDITO;
+    }
+
+    return null;
+}
+private ServicioAdicional[] obtenerServiciosSeleccionados() {
+
+    DefaultTableModel modelo =
+            (DefaultTableModel) tbServiciosReserva.getModel();
+
+    ServicioAdicional[] servicios =
+            new ServicioAdicional[modelo.getRowCount()];
+
+    for (int i = 0; i < modelo.getRowCount(); i++) {
+
+        String codigo = modelo.getValueAt(i, 0).toString();
+
+        servicios[i] = gestorServicios.buscarServicio(codigo);
+    }
+
+    return servicios;
+}
+private void calcularSaldoPendiente() {
+
+    String textoTotal = jlbTotalReserva.getText()
+            .replace("Q", "").trim();
+
+    double totalReserva;
+
+    try {
+        totalReserva = Double.parseDouble(textoTotal);
+    } catch (NumberFormatException e) {
+        lblSaldoPendiente.setText("Q 0.00");
+        return;
+    }
+
+    double anticipo = 0;
+
+    if (!txtAnticipo.getText().trim().isEmpty()) {
+
+        try {
+            anticipo = Double.parseDouble(
+                    txtAnticipo.getText().trim());
+        } catch (NumberFormatException e) {
+            lblSaldoPendiente.setText("Anticipo inválido");
+            return;
+        }
+    }
+
+    if (!Double.isFinite(anticipo)
+            || anticipo < 0
+            || anticipo > totalReserva) {
+
+        lblSaldoPendiente.setText("Anticipo inválido");
+        return;
+    }
+
+    double saldo = totalReserva - anticipo;
+
+    lblSaldoPendiente.setText(
+            String.format("Q %.2f", saldo));
+}
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -340,10 +598,10 @@ private void calcularPrecioReserva() {
         jPanel4 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
+        jblTotalGeneral = new javax.swing.JLabel();
+        totalServiciosAdicionales = new javax.swing.JLabel();
+        jblPrecioTotalCancha = new javax.swing.JLabel();
+        jlbTotalReserva = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         txtBuscarCliente = new javax.swing.JTextField();
         btnBuscarCliente = new javax.swing.JButton();
@@ -355,11 +613,12 @@ private void calcularPrecioReserva() {
         jPanel7 = new javax.swing.JPanel();
         cmboxServicio = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
+        btnAgregarServicio = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbServiciosReserva = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtTotalServicios = new javax.swing.JTextField();
+        btnquitarServicio = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
@@ -367,17 +626,18 @@ private void calcularPrecioReserva() {
         jLabel12 = new javax.swing.JLabel();
         txtPrecioHora = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
-        txtPrecioTotal = new javax.swing.JTextField();
+        txtPrecioTotalCancha = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
-        jTextField7 = new javax.swing.JTextField();
+        txtAnticipo = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jLabel22 = new javax.swing.JLabel();
+        cmboxMetodoPago = new javax.swing.JComboBox<>();
         jLabel23 = new javax.swing.JLabel();
-        jLabel24 = new javax.swing.JLabel();
+        lblSaldoPendiente = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setClosable(true);
@@ -473,55 +733,58 @@ private void calcularPrecioReserva() {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen de la Reserva"));
 
-        jLabel7.setText("Precio de cancha");
+        jLabel7.setText("Precio total de Cancha");
 
         jLabel8.setText("Servicio Adicionales");
 
-        jLabel16.setText("jLabel16");
+        jblTotalGeneral.setText("Total de la Reserva");
 
-        jLabel17.setText("jLabel17");
+        totalServiciosAdicionales.setText("Q");
 
-        jLabel18.setText("Total de la Reserva");
+        jblPrecioTotalCancha.setText("Q");
 
-        jLabel19.setText("jLabel19");
+        jlbTotalReserva.setText("Q.");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jblTotalGeneral)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(34, 34, 34)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel8))
-                        .addGap(45, 45, 45)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel17)
-                            .addComponent(jLabel16)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel19)))
-                .addGap(17, 42, Short.MAX_VALUE))
+                            .addComponent(jlbTotalReserva)
+                            .addComponent(jblPrecioTotalCancha)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(47, 47, 47)
+                        .addComponent(totalServiciosAdicionales)))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+                .addGap(56, 56, 56)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(totalServiciosAdicionales))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jLabel16))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel17))
-                .addGap(23, 23, 23)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel18)
-                    .addComponent(jLabel19))
-                .addContainerGap(20, Short.MAX_VALUE))
+                    .addComponent(jblPrecioTotalCancha))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(jblTotalGeneral))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jlbTotalReserva)
+                        .addGap(1, 1, 1)))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del Cliente"));
@@ -583,9 +846,10 @@ private void calcularPrecioReserva() {
 
         jLabel10.setText("Seleccionar un servicio");
 
-        jButton6.setText("Agregar el Servicio");
+        btnAgregarServicio.setText("Agregar el Servicio");
+        btnAgregarServicio.addActionListener(this::btnAgregarServicioActionPerformed);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbServiciosReserva.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -593,49 +857,56 @@ private void calcularPrecioReserva() {
                 "Código ", "Servicio", "Precio"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tbServiciosReserva);
 
         jLabel11.setText("Total Servicio");
+
+        btnquitarServicio.setText("Quitar Servicio");
+        btnquitarServicio.addActionListener(this::btnquitarServicioActionPerformed);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(jLabel10))
-            .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(cmboxServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
-                        .addComponent(jButton6))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel11)))))
+                            .addComponent(txtTotalServicios, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11)))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(cmboxServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42)
+                        .addComponent(btnAgregarServicio)
+                        .addGap(61, 61, 61)
+                        .addComponent(btnquitarServicio))))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmboxServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6))
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmboxServicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnAgregarServicio))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel11)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtTotalServicios, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(50, 50, 50)
+                        .addComponent(btnquitarServicio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
@@ -651,7 +922,7 @@ private void calcularPrecioReserva() {
 
         txtPrecioHora.addActionListener(this::txtPrecioHoraActionPerformed);
 
-        jLabel15.setText("Precio total");
+        jLabel15.setText("Precio total de Cancha");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -668,7 +939,7 @@ private void calcularPrecioReserva() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel15)
-                            .addComponent(txtPrecioTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtPrecioTotalCancha, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel6)
@@ -698,25 +969,23 @@ private void calcularPrecioReserva() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtPrecioHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPrecioTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtPrecioTotalCancha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        jButton4.setText("Guardar Cambios");
+        jButton4.setText("REGISTRAR RESERVA");
 
         jButton5.setText("Limpiar");
 
-        jTextField7.setText("jTextField7");
+        txtAnticipo.addActionListener(this::txtAnticipoActionPerformed);
 
         jLabel20.setText("Anticipo");
 
         jLabel21.setText("Metodo de Pago");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmboxMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "EFECTIVO", "TRANSFERENCIA", "TARJETA_DEBITO", "TARJETA_CREDITO" }));
 
-        jLabel22.setText("Saldo");
-
-        jLabel24.setText("jLabel24");
+        jLabel14.setText("Saldo Pendiente");
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -726,73 +995,76 @@ private void calcularPrecioReserva() {
                 .addGap(16, 16, 16)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(txtAnticipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31)
+                        .addComponent(cmboxMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(112, 112, 112)
-                        .addComponent(jLabel23)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                         .addComponent(jLabel20)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel21)
-                            .addComponent(jLabel24))
-                        .addGap(33, 33, 33))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                        .addComponent(jLabel21)
+                        .addGap(33, 33, 33))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jLabel14)
+                        .addGap(33, 33, 33)
+                        .addComponent(lblSaldoPendiente, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel23)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel20)
-                    .addComponent(jLabel21))
-                .addGap(13, 13, 13)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
-                .addComponent(jLabel23)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel24)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel22)
-                .addGap(10, 10, 10))
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblSaldoPendiente, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel20)
+                            .addComponent(jLabel21))
+                        .addGap(13, 13, 13)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtAnticipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmboxMetodoPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(79, 79, 79)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel23))))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
+
+        jButton1.setText("GUADAR CAMBIOS");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(118, 118, 118)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(104, 104, 104)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
-                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGap(88, 88, 88)
-                                .addComponent(jButton4))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGap(115, 115, 115)
-                                .addComponent(jButton5)))))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(910, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton4)
+                .addGap(18, 18, 18)
+                .addComponent(jButton5)
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addGap(1032, 1032, 1032))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -806,18 +1078,24 @@ private void calcularPrecioReserva() {
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jButton4)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton5)))
-                .addContainerGap(5899, Short.MAX_VALUE))
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(41, 41, 41)
+                                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(43, 43, 43)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jButton5)
+                            .addComponent(jButton4)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(6089, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
@@ -836,18 +1114,17 @@ private void calcularPrecioReserva() {
                         .addContainerGap()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
+                        .addGap(45, 45, 45)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -927,38 +1204,48 @@ private void calcularPrecioReserva() {
        consultarCanchasDisponibles();
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void btnAgregarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarServicioActionPerformed
+     agregarServicioTabla();        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAgregarServicioActionPerformed
+
+    private void btnquitarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnquitarServicioActionPerformed
+        // TODO add your handling code here:
+        quitarServicioTabla();
+    }//GEN-LAST:event_btnquitarServicioActionPerformed
+
+    private void txtAnticipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAnticipoActionPerformed
+    calcularSaldoPendiente();        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAnticipoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregarServicio;
     private javax.swing.JButton btnBuscarCliente;
+    private javax.swing.JButton btnquitarServicio;
     private javax.swing.JComboBox<String> cmboxCanchaDisponible;
     private javax.swing.JComboBox<String> cmboxCliente;
     private javax.swing.JComboBox<String> cmboxDuracionHoras;
     private javax.swing.JComboBox<String> cmboxHoraInicio;
+    private javax.swing.JComboBox<String> cmboxMetodoPago;
     private javax.swing.JComboBox<String> cmboxServicio;
     private com.toedter.calendar.JDateChooser dateFechaReserva;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -976,12 +1263,17 @@ private void calcularPrecioReserva() {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField7;
+    private javax.swing.JLabel jblPrecioTotalCancha;
+    private javax.swing.JLabel jblTotalGeneral;
+    private javax.swing.JLabel jlbTotalReserva;
+    private javax.swing.JLabel lblSaldoPendiente;
+    private javax.swing.JTable tbServiciosReserva;
+    private javax.swing.JLabel totalServiciosAdicionales;
+    private javax.swing.JTextField txtAnticipo;
     private javax.swing.JTextField txtBuscarCliente;
     private javax.swing.JTextField txtHoraFin;
     private javax.swing.JTextField txtPrecioHora;
-    private javax.swing.JTextField txtPrecioTotal;
+    private javax.swing.JTextField txtPrecioTotalCancha;
+    private javax.swing.JTextField txtTotalServicios;
     // End of variables declaration//GEN-END:variables
 }

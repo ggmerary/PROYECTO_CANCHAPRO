@@ -301,14 +301,13 @@ public class Reserva {
 
         for (int i = 0; i < cantidadServicios; i++) {
 
-            totalServicios =
-                    totalServicios + preciosAplicados[i];
+            totalServicios =totalServicios + preciosAplicados[i];
         }
 
         return totalServicios;
     }
 
-    // ACTUALIZAR TOTAL DE LA RESERVA
+
     public void actualizarTotal(double totalCancha) {
 
         if (estado != EstadoReserva.PENDIENTE

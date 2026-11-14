@@ -16,7 +16,7 @@ public class GestorReservas {
     private Tarifa tarifa;
     private GestorServiciosAdicionales gestorServicios;
 
-    public GestorReservas(int capacidad, Tarifa tarifa, GestorServiciosAdicionales gestorServicio) {
+    public GestorReservas(int capacidad, Tarifa tarifa, GestorServiciosAdicionales gestorServicios) {
 
         listaReservas = new Reserva[capacidad];
         cantidadReservas = 0;
@@ -304,17 +304,17 @@ public class GestorReservas {
     ArchivoReservaServicios archivoServicios =
             new ArchivoReservaServicios();
 
-    // Cargar las reservas desde el CSV
+
     Reserva[] reservasCargadas =
             archivoReserva.cargarReservas(listaReservas.length);
 
-    // Recuperar los servicios de cada reserva
+
     archivoServicios.cargarServiciosReservas(
             reservasCargadas,
             gestorServicios
     );
 
-    // Actualizar el arreglo del gestor
+
     establecerReservas(reservasCargadas);
     }
     public LocalTime calcularHoraFin(
